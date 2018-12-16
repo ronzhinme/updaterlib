@@ -1,0 +1,3 @@
+[submodule "3d-party/curl"]
+	path = 3d-party/curl
+	url = https://github.com/curl/curl.git
