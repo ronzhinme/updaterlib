@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
-project(appUpdater_exe)
 
-include_directories("./3d-party/curl/include")
-link_directories("./3d-party/curl/lib")
+set (APPUPDATER_VERSION_MAJOR 0)
+set (APPUPDATER_VERSION_MINOR 0)
 
-set(SRC_LIST main.cpp)
+add_subdirectory("src")
 
-add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_link_libraries(${PROJECT_NAME} "curldll")
-configure_file("./3d-party/curl/lib/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+option(MAKE_TESTS "Is need make tests?" ON)
+if(MAKE_TESTS)
+    include(CTest)
+    add_subdirectory("unittests")
+    add_test(curlCheck checkUrl)
+endif()
