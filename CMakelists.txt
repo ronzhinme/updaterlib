@@ -5,9 +5,6 @@ set (APPUPDATER_VERSION_MINOR 0)
 
 add_subdirectory("src")
 
-option(MAKE_TESTS "Is need make tests?" ON)
-if(MAKE_TESTS)
-    include(CTest)
+if(BUILD_TESTING)
     add_subdirectory("unittests")
-    add_test(curlCheck checkUrl)
 endif()

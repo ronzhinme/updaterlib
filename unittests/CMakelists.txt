@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
-project(checkUrl)
+project(curlCheck)
+include(CTest)
+enable_testing()
 
 include_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/include")
 link_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/lib")
@@ -9,3 +11,6 @@ set(SRC_LIST main.cpp)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} "curldll")
 configure_file("${PROJECT_SOURCE_DIR}/../3d-party/curl/lib/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+
+add_test(checkUrl curlCheck)
+# set_tests_properties (checkUrl PROPERTIES PASS_REGULAR_EXPRESSION 1)

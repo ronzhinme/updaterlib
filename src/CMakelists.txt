@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(appUpdater_exe)
+project(appUpdater)
 
 include_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/include")
 link_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/lib")

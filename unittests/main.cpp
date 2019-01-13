@@ -17,6 +17,6 @@ int main(void) {
     if (ret != 0) { 
         exit(EXIT_FAILURE);
     }
-
-    return 0;
+    
+    return EXIT_SUCCESS;
 }
