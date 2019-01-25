@@ -6,11 +6,13 @@ enable_testing()
 include_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/include")
 link_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/lib")
 
-set(SRC_LIST main.cpp)
+add_executable(${PROJECT_NAME}_checkUrl checkUrl.cpp)
+add_executable(${PROJECT_NAME}_checkFtp checkFtp.cpp)
 
-add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_link_libraries(${PROJECT_NAME} "curldll")
+target_link_libraries(${PROJECT_NAME}_checkUrl "curldll")
+target_link_libraries(${PROJECT_NAME}_checkFtp "curldll")
+
 configure_file("${PROJECT_SOURCE_DIR}/../3d-party/curl/lib/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
 
-add_test(checkUrl curlCheck)
-# set_tests_properties (checkUrl PROPERTIES PASS_REGULAR_EXPRESSION 1)
+add_test(checkUrl ${PROJECT_NAME}_checkUrl)
+add_test(checkFtp ${PROJECT_NAME}_checkFtp)
