@@ -9,9 +9,12 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
+          
+          # curl
           - git submodule update --init --recursive
           - cd 3d-party/curl
-          - cmake ./
-          - make
+          - make all
+
+          # appUpdater
           - cmake ./
           - make
