@@ -13,6 +13,7 @@ pipelines:
           # curl
           - git submodule update --init --recursive
           - cd 3d-party/curl
+          - ./configure
           - make
 
           # appUpdater
