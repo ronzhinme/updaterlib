@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
+include(CTest)
+enable_testing()
 
 set (APPUPDATER_VERSION_MAJOR 0)
 set (APPUPDATER_VERSION_MINOR 0)

@@ -9,11 +9,15 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
-          
+          - apt install -y autoconf libtool
+
           # curl
           - git submodule update --init --recursive
           - cd 3d-party/curl
-          - make -f Makefile linux
+          - ./buildconf
+          - ./configure
+          - make
+          - make install
 
           # appUpdater
           - cmake ./
