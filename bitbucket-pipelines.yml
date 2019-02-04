@@ -3,13 +3,13 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: matrim/cmake-examples:3.5.1
+image: ubuntu:14.04
 
 pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
-          - apt install -y libtool
+          - apt install -y git cmake gcc autoconf libtool
 
           # curl
           - git submodule update --init --recursive
