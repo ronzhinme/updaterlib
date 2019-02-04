@@ -10,7 +10,7 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - apt-get update
-          - apt-get install -y git cmake gcc autoconf libtool
+          - apt-get install -y git cmake build-essential autoconf libtool
 
           # curl
           - git submodule update --init --recursive
