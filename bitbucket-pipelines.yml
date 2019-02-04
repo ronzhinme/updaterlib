@@ -21,5 +21,6 @@ pipelines:
           - make install
 
           # appUpdater
+          - cd ../..
           - cmake ./
           - make
