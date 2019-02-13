@@ -1,11 +1,11 @@
 
 
-#include <wchar.h>
 #include "../src/updater.h"
 
 int main()
 {
     VersionInfo vi;
+    auto v = vi.ToString();
 
     if (vi.ToString().compare(L"0.0.0.0") != 0)
     {
@@ -17,7 +17,7 @@ int main()
         vi.major = i;
         if (vi.ToString().compare(std::to_wstring(i) + L".0.0.0") != 0)
         {
-            wprintf(L"%ls \n", vi.ToString());
+            wprintf(L"%ls \n", vi.ToString().c_str());
             return EXIT_FAILURE;
         }
 
@@ -25,7 +25,7 @@ int main()
         if (vi.ToString().compare(std::to_wstring(vi.major) + L"." +
                                   std::to_wstring(i) + L".0.0") != 0)
         {
-            wprintf(L"%ls \n", vi.ToString());
+            wprintf(L"%ls \n", vi.ToString().c_str());
             return EXIT_FAILURE;
         }
 
@@ -34,7 +34,7 @@ int main()
                                   std::to_wstring(vi.minor) + L"." +
                                   std::to_wstring(i) + L".0") != 0)
         {
-            wprintf(L"%ls \n", vi.ToString());
+            wprintf(L"%ls \n", vi.ToString().c_str());
             return EXIT_FAILURE;
         }
 
@@ -44,7 +44,7 @@ int main()
                                   std::to_wstring(vi.release) + L"." +
                                   std::to_wstring(i)) != 0)
         {
-            wprintf(L"%ls \n", vi.ToString());
+            wprintf(L"%ls \n", vi.ToString().c_str());
             return EXIT_FAILURE;
         }
     }

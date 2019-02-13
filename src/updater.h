@@ -14,7 +14,7 @@ struct VersionInfo
 
     VersionInfo():major(0), minor(0), release(0), build(0) {}
 
-    std::wstring ToString() const; 
+    const std::wstring ToString() const; 
 };
 
 class Updater
@@ -23,7 +23,7 @@ public:
     Updater() {};
     ~Updater() {};
 
-    std::wstring getCurrentVersion() const;
+    const std::wstring getCurrentVersion() const;
     void setCurrentVersion(const VersionInfo & versionInfo);
     std::wstring getVersionInfoUrl() const;
     void setVersionInfoUrl(const char* url);

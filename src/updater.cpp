@@ -2,14 +2,12 @@
 #include <stdio.h>
 #include "updater.h"
 
-std::wstring VersionInfo::ToString() const
+const std::wstring VersionInfo::ToString() const
 {
-    wchar_t buf[100];
-    snwprintf(buf, 100, L"%ls.%ls.%ls.%ls", major, minor, release, build);
-    return buf;
+    return std::to_wstring(major) + L"." + std::to_wstring(minor) + L"." + std::to_wstring(release) + L"." + std::to_wstring(build);
 }
 
-std::wstring Updater::getCurrentVersion() const
+const std::wstring Updater::getCurrentVersion() const
 {
     return m_verInfo.ToString();
 }
