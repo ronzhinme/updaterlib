@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
+set (CMAKE_CXX_STANDARD 11)
 project(appUpdater)
 
 include_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/include")
