@@ -3,3 +3,4 @@ build/*
 CMakeFiles/*
 settings.json
 c_cpp_properties.json
+src/version.h
