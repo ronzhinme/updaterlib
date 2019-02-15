@@ -14,15 +14,15 @@ int main()
 
     for (int i = 1; i < 10000; ++i)
     {
-        vi.major = i;
+        vi.high = i;
         if (vi.ToString().compare(std::to_wstring(i) + L".0.0.0") != 0)
         {
             wprintf(L"%ls \n", vi.ToString().c_str());
             return EXIT_FAILURE;
         }
 
-        vi.minor = i;
-        if (vi.ToString().compare(std::to_wstring(vi.major) + L"." +
+        vi.low = i;
+        if (vi.ToString().compare(std::to_wstring(vi.high) + L"." +
                                   std::to_wstring(i) + L".0.0") != 0)
         {
             wprintf(L"%ls \n", vi.ToString().c_str());
@@ -30,8 +30,8 @@ int main()
         }
 
         vi.release = i;
-        if (vi.ToString().compare(std::to_wstring(vi.major) + L"." +
-                                  std::to_wstring(vi.minor) + L"." +
+        if (vi.ToString().compare(std::to_wstring(vi.high) + L"." +
+                                  std::to_wstring(vi.low) + L"." +
                                   std::to_wstring(i) + L".0") != 0)
         {
             wprintf(L"%ls \n", vi.ToString().c_str());
@@ -39,8 +39,8 @@ int main()
         }
 
         vi.build = i;
-        if (vi.ToString().compare(std::to_wstring(vi.major) + L"." +
-                                  std::to_wstring(vi.minor) + L"." +
+        if (vi.ToString().compare(std::to_wstring(vi.high) + L"." +
+                                  std::to_wstring(vi.low) + L"." +
                                   std::to_wstring(vi.release) + L"." +
                                   std::to_wstring(i)) != 0)
         {

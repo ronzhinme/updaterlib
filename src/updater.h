@@ -7,12 +7,12 @@
 
 struct VersionInfo
 {
-    unsigned long major;
-    unsigned long minor;
+    unsigned long high;
+    unsigned long low;
     unsigned long release;
     unsigned long build;
 
-    VersionInfo():major(0), minor(0), release(0), build(0) {}
+    VersionInfo():high(0), low(0), release(0), build(0) {}
 
     const std::wstring ToString() const; 
 };
