@@ -5,9 +5,9 @@
 
 bool compareVersion(const VersionInfo &vi, const std::wstring &val)
 {
-    if (vi.ToString().compare(val) != 0)
+    if (vi.toString().compare(val) != 0)
     {
-        wprintf(L"%ls %ls\n", vi.ToString().c_str(), val.c_str());
+        wprintf(L"%ls %ls\n", vi.toString().c_str(), val.c_str());
         return false;
     }
     return true;
@@ -16,7 +16,7 @@ bool compareVersion(const VersionInfo &vi, const std::wstring &val)
 int main()
 {
     VersionInfo vi;
-    auto v = vi.ToString();
+    auto v = vi.toString();
 
     if (!compareVersion(vi, L"0.0.0.0"))
     {
@@ -35,6 +35,22 @@ int main()
             return EXIT_FAILURE;
         }
     }
+
+    VersionInfo vi1(L"1");              if(!compareVersion(vi1, L"1.0.0.0")) return EXIT_FAILURE;
+    VersionInfo vi2(L"2.");             if(!compareVersion(vi2, L"2.0.0.0")) return EXIT_FAILURE;
+    VersionInfo vi3(L"3.1");            if(!compareVersion(vi3, L"3.1.0.0")) return EXIT_FAILURE;
+    VersionInfo vi4(L"4.2.");           if(!compareVersion(vi4, L"4.2.0.0")) return EXIT_FAILURE;
+    VersionInfo vi5(L"5.3.1");          if(!compareVersion(vi5, L"5.3.1.0")) return EXIT_FAILURE;
+    VersionInfo vi6(L"6.4.2.");         if(!compareVersion(vi6, L"6.4.2.0")) return EXIT_FAILURE;
+    VersionInfo vi7(L"7.5.3.1");        if(!compareVersion(vi7, L"7.5.3.1")) return EXIT_FAILURE;
+    VersionInfo vi8(L"8.6.4.2.");       if(!compareVersion(vi8, L"8.6.4.2")) return EXIT_FAILURE;
+
+    VersionInfo vi9(L"...");            if(!compareVersion(vi9,  L"0.0.0.0")) return EXIT_FAILURE;
+    VersionInfo vi10(L"....");          if(!compareVersion(vi10, L"0.0.0.0")) return EXIT_FAILURE;
+    VersionInfo vi11(L" . . . .");      if(!compareVersion(vi11, L"0.0.0.0")) return EXIT_FAILURE;
+    VersionInfo vi12(L" . . . . 1");    if(!compareVersion(vi12, L"1.0.0.0")) return EXIT_FAILURE;
+    VersionInfo vi13(L"");              if(!compareVersion(vi13, L"0.0.0.0")) return EXIT_FAILURE;
+    VersionInfo vi14(L"asaasasdas");    if(!compareVersion(vi14, L"0.0.0.0")) return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
