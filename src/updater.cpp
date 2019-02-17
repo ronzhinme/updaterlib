@@ -26,6 +26,14 @@ const std::wstring VersionInfo::toString() const
     return std::to_wstring(high) + L"." + std::to_wstring(low) + L"." + std::to_wstring(release) + L"." + std::to_wstring(build);
 }
 
+bool VersionInfo::less(const VersionInfo & vi) const
+{
+    return high < vi.high || 
+            (high == vi.high && low < vi.low) || 
+            (high == vi.high && low == vi.low && release < vi.release) ||
+            (high == vi.high && low == vi.low && release == vi.release && build < vi.build);
+}
+
 const std::wstring Updater::getCurrentVersion() const
 {
     return m_verInfo.toString();

@@ -15,6 +15,7 @@ bool compareVersion(const VersionInfo &vi, const std::wstring &val)
 
 int main()
 {
+    // toString()
     VersionInfo vi;
     auto v = vi.toString();
 
@@ -36,6 +37,7 @@ int main()
         }
     }
 
+    // fromString()
     VersionInfo vi1(L"1");              if(!compareVersion(vi1, L"1.0.0.0")) return EXIT_FAILURE;
     VersionInfo vi2(L"2.");             if(!compareVersion(vi2, L"2.0.0.0")) return EXIT_FAILURE;
     VersionInfo vi3(L"3.1");            if(!compareVersion(vi3, L"3.1.0.0")) return EXIT_FAILURE;
@@ -51,6 +53,19 @@ int main()
     VersionInfo vi12(L" . . . . 1");    if(!compareVersion(vi12, L"1.0.0.0")) return EXIT_FAILURE;
     VersionInfo vi13(L"");              if(!compareVersion(vi13, L"0.0.0.0")) return EXIT_FAILURE;
     VersionInfo vi14(L"asaasasdas");    if(!compareVersion(vi14, L"0.0.0.0")) return EXIT_FAILURE;
+
+    // less
+    VersionInfo viLess0;
+    VersionInfo viLess1(L"1.2.3.4");
+    if(viLess0.less(VersionInfo())) return EXIT_FAILURE;
+    if(!viLess0.less(VersionInfo(L"0.0.0.1"))) return EXIT_FAILURE;
+    if(viLess1.less(VersionInfo(L"1.2.3.4"))) return EXIT_FAILURE;
+    if(!viLess0.less(VersionInfo(L"0.0.0.1"))) return EXIT_FAILURE;
+    if(!viLess1.less(VersionInfo(L"2.2.3.4"))) return EXIT_FAILURE;
+    if(!viLess1.less(VersionInfo(L"1.3.3.4"))) return EXIT_FAILURE;
+    if(!viLess1.less(VersionInfo(L"1.2.4.4"))) return EXIT_FAILURE;
+    if(!viLess1.less(VersionInfo(L"1.2.3.5"))) return EXIT_FAILURE;
+    if(viLess1.less(VersionInfo(L"1.2.3.3"))) return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
