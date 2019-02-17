@@ -24,3 +24,7 @@ pipelines:
           - cd ../..
           - cmake ./
           - make
+
+          # ctest
+          - cd build
+          - ctest -j10 -C Release -T test --output-on-failure
