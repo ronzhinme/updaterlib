@@ -15,6 +15,7 @@ struct VersionInfo
     VersionInfo(const std::wstring & val);
     const std::wstring toString() const; 
     bool less(const VersionInfo & vi) const;
+    VersionInfo & operator = (const VersionInfo & val);
 };
 
 #endif

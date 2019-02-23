@@ -16,7 +16,7 @@ public:
     const std::wstring getCurrentVersion() const;
     void setCurrentVersion(const VersionInfo & versionInfo);
     std::wstring getVersionInfoUrl() const;
-    void setVersionInfoUrl(const char* url);
+    void setVersionInfoUrl(const wchar_t* url);
     void checkForUpdate() const;
 private:
     std::wstring m_infoUrl;

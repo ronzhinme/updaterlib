@@ -31,3 +31,12 @@ bool VersionInfo::less(const VersionInfo & vi) const
             (high == vi.high && low == vi.low && release < vi.release) ||
             (high == vi.high && low == vi.low && release == vi.release && build < vi.build);
 }
+
+VersionInfo & VersionInfo::operator = (const VersionInfo & val)
+{
+    this->high = val.high;
+    this->low = val.low;
+    this->release = val.release;
+    this->build = val.build;
+    return *this;
+}
