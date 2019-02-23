@@ -1,7 +1,7 @@
 
 #include <cstdlib>
 #include <ctime>
-#include "../src/updater.h"
+#include "../src/versionInfo.h"
 
 bool compareVersion(const VersionInfo &vi, const std::wstring &val)
 {
