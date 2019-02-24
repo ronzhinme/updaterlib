@@ -18,7 +18,7 @@ public:
     void setCurrentVersion(const VersionInfo & versionInfo);
     std::wstring getVersionInfoUrl() const;
     void setVersionInfoUrl(const wchar_t* url);
-    void checkForUpdate() const;
+    void checkForUpdate();
     unsigned long getAutoUpdateInterval() const;
     void setAutoUpdateInterval(unsigned long hours);
 private:

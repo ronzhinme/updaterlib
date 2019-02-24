@@ -34,8 +34,12 @@ void Updater::setAutoUpdateInterval(unsigned long hours)
     m_autoUpdateInterval = hours;
 }
 
-void Updater::checkForUpdate() const
+void Updater::checkForUpdate()
 {
+    std::wstring data;
+    const std::wstring url(L"https://www.example.com/");
+    m_curlBridge.getUrlData(url, data);
+
     // download signature (dSign)
     // download xml (xmlInfo)
     // calculate xml signature (cSign)
