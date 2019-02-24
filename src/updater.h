@@ -6,6 +6,7 @@
 #include <string>
 
 #include "versionInfo.h"
+#include "curlBridge.h"
 
 class Updater
 {
@@ -24,6 +25,7 @@ private:
     std::wstring m_infoUrl;
     VersionInfo m_verInfo; 
     unsigned long m_autoUpdateInterval;
+    CurlBridge m_curlBridge;
 };
 
 #endif //UPDATER_H
