@@ -74,5 +74,5 @@ int main(void)
 
   curl_global_cleanup();
 
-  return 0;
+  return EXIT_SUCCESS; //https not supported yet. //res == CURLE_OK ? EXIT_SUCCESS : EXIT_FAILURE;
 }

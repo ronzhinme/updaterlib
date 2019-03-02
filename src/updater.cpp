@@ -37,7 +37,7 @@ void Updater::setAutoUpdateInterval(unsigned long hours)
 void Updater::checkForUpdate()
 {
     std::wstring data;
-    const std::wstring url(L"https://www.example.com/");
+    const std::string url("http://www.example.com/");
     m_curlBridge.getUrlData(url, data);
 
     // download signature (dSign)

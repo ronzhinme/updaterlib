@@ -15,7 +15,7 @@ int main(void) {
     }
 
     ret = curl_easy_perform(curl);
-    if (ret != 0) { 
+    if (ret != CURLE_OK) { 
         exit(EXIT_FAILURE);
     }
     

@@ -7,7 +7,7 @@
 class CurlBridge
 {
   public:
-    void getUrlData(const std::wstring & url, std::wstring & data);
+    bool getUrlData(const std::string & url, std::wstring & data);
 };
 
 #endif
