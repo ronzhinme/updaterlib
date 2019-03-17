@@ -2,13 +2,29 @@
 #include <curl/curl.h>
 #include "curlBridge.h"
 
-static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
+static size_t write_data(void *receivedData, size_t size, size_t nmemb, void *bridgePtr)
 {
-    printf("%s\n", (char *)ptr);
-    return size * nmemb;
+    size_t readBytesCount = size * nmemb;
+    CurlBridge *bridge = (CurlBridge *)bridgePtr;
+    
+    if (bridge->onDataReceived() != NULL)
+    {
+        bridge->onDataReceived()((const char *)receivedData, readBytesCount);
+    }
+    return readBytesCount;
 }
 
-bool CurlBridge::getUrlData(const std::string &url, std::wstring &data)
+void CurlBridge::onDataReceivedEvent(std::function<void(const char*, size_t)> handler) 
+{
+    m_onDataReceived = handler;
+}
+
+DataReceivedFunction CurlBridge::onDataReceived() const
+{
+    return m_onDataReceived;
+}
+
+bool CurlBridge::getUrlData(const std::string &url)
 {
     if (url.empty())
         return false;
@@ -24,7 +40,7 @@ bool CurlBridge::getUrlData(const std::string &url, std::wstring &data)
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
 
     auto res = curl_easy_perform(curl);
     if (res != CURLE_OK)
@@ -34,7 +50,6 @@ bool CurlBridge::getUrlData(const std::string &url, std::wstring &data)
     }
 
     curl_easy_cleanup(curl);
-
     curl_global_cleanup();
     return true;
 }

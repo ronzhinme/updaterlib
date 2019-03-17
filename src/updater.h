@@ -26,6 +26,7 @@ private:
     VersionInfo m_verInfo; 
     unsigned long m_autoUpdateInterval;
     CurlBridge m_curlBridge;
+    void onDataReceived(const char* data, size_t dataSize);
 };
 
 #endif //UPDATER_H

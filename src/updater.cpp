@@ -1,7 +1,11 @@
 
 #include <stdio.h>
 #include <wchar.h>
+#include <functional>
+
 #include "updater.h"
+
+using namespace std::placeholders;
 
 const std::wstring Updater::getCurrentVersion() const
 {
@@ -34,11 +38,17 @@ void Updater::setAutoUpdateInterval(unsigned long hours)
     m_autoUpdateInterval = hours;
 }
 
+void Updater::onDataReceived(const char* data, size_t dataSize)
+{
+    printf("%s [%s] [%d]\n", __FUNCTION__, (const char *)data, dataSize);
+}
+
 void Updater::checkForUpdate()
 {
-    std::wstring data;
     const std::string url("http://www.example.com/");
-    m_curlBridge.getUrlData(url, data);
+
+    m_curlBridge.onDataReceivedEvent([this](const char* d, size_t l){this->onDataReceived(d,l);});
+    m_curlBridge.getUrlData(url);
 
     // download signature (dSign)
     // download xml (xmlInfo)
