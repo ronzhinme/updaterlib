@@ -40,7 +40,7 @@ void Updater::setAutoUpdateInterval(unsigned long hours)
 
 void Updater::onDataReceived(const char* data, size_t dataSize)
 {
-    printf("%s [%s] [%d]\n", __FUNCTION__, (const char *)data, dataSize);
+    printf("%s [%s] [%ld]\n", __FUNCTION__, (const char *)data, dataSize);
 }
 
 void Updater::checkForUpdate()

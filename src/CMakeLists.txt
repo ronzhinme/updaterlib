@@ -3,17 +3,22 @@ project(appUpdater)
 
 include_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/include")
 
+set(CURL_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/curl")
+
 if (WIN32)
-set(CURL_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/curl/builds/libcurl-vc-x86-release-dll-ipv6-sspi-winssl")
-link_directories("${CURL_LIB_PATH}/lib")
-link_directories("${CURL_LIB_PATH}/bin")
-elseif(LINUX)
-link_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/lib/.libs")
+set(CURL_PREFIX "builds/libcurl-vc-x86-release-dll-ipv6-sspi-winssl")
+link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/lib")
+link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/bin")
+elseif(UNIX)
+set(CURL_PREFIX "lib/.libs")
+link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}")
 endif()
 
 configure_file("${PROJECT_SOURCE_DIR}/version_template.h" "${PROJECT_SOURCE_DIR}/version.h")
 
-set(SRC_LIST updater.cpp versionInfo.cpp curlBridge.cpp)
+set(SRC_LIST  updater.h updater.cpp 
+              versionInfo.h versionInfo.cpp 
+              curlBridge.h curlBridge.cpp)
 
 add_library(${PROJECT_NAME}Static STATIC ${SRC_LIST})
 add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST})
@@ -21,7 +26,7 @@ add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST})
 if (WIN32)
 target_link_libraries(${PROJECT_NAME}Shared "libcurl.dll")
 configure_file("${CURL_LIB_PATH}/bin/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
-elseif(LINUX)
-target_link_libraries(${PROJECT_NAME}Shared "libcurl.so.*")
-configure_file("${PROJECT_SOURCE_DIR}/../3d-party/curl/lib/.libs/libcurl.so.*" ${PROJECT_BINARY_DIR} COPYONLY)
+elseif(UNIX)
+target_link_libraries(${PROJECT_NAME}Shared "curl")
+configure_file("${CURL_LIB_PATH}/lib/.libs/libcurl.so.4.5.0" ${PROJECT_BINARY_DIR} COPYONLY)
 endif()

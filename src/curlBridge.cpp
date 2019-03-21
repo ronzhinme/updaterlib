@@ -1,6 +1,6 @@
 
-#include <curl/curl.h>
 #include "curlBridge.h"
+#include <curl/curl.h>
 
 static size_t write_data(void *receivedData, size_t size, size_t nmemb, void *bridgePtr)
 {
