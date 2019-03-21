@@ -25,7 +25,7 @@ add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST})
 
 if (WIN32)
 target_link_libraries(${PROJECT_NAME}Shared "libcurl.dll")
-configure_file("${CURL_LIB_PATH}/bin/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+# configure_file("${CURL_LIB_PATH}/${CURL_PREFIX}/bin/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
 elseif(UNIX)
 target_link_libraries(${PROJECT_NAME}Shared "curl")
 configure_file("${CURL_LIB_PATH}/lib/.libs/libcurl.so.4.5.0" ${PROJECT_BINARY_DIR} COPYONLY)
