@@ -1,3 +1,6 @@
 [submodule "3d-party/curl"]
 	path = 3d-party/curl
 	url = https://github.com/curl/curl.git
+[submodule "3d-party/libxml2"]
+	path = 3d-party/libxml2
+	url = https://github.com/GNOME/libxml2.git
