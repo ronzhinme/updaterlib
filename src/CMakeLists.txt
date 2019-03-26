@@ -2,13 +2,18 @@ cmake_minimum_required(VERSION 2.8)
 project(appUpdater)
 
 include_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/include")
+include_directories("${PROJECT_SOURCE_DIR}/../3d-party/libxml2/include")
 
 set(CURL_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/curl")
+set(LIBXML2_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/libxml2")
 
 if (WIN32)
 set(CURL_PREFIX "builds/libcurl-vc-x86-release-dll-ipv6-sspi-winssl")
+set(LIBXML2_PREFIX "win32/bin.msvc")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/lib")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/bin")
+link_directories("${LIBXML2_LIB_PATH}/${LIBXML2_PREFIX}")
+
 elseif(UNIX)
 set(CURL_PREFIX "lib/.libs")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}")
@@ -25,7 +30,8 @@ add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST})
 
 if (WIN32)
 target_link_libraries(${PROJECT_NAME}Shared "libcurl.dll")
-# configure_file("${CURL_LIB_PATH}/${CURL_PREFIX}/bin/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+target_link_libraries(${PROJECT_NAME}Shared "libxml2.dll")
+
 elseif(UNIX)
 target_link_libraries(${PROJECT_NAME}Shared "curl")
 configure_file("${CURL_LIB_PATH}/lib/.libs/libcurl.so.4.5.0" ${PROJECT_BINARY_DIR} COPYONLY)

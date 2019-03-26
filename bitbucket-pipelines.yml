@@ -11,17 +11,24 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - apt-get update
           - apt-get install -y git cmake build-essential autoconf libtool
+          - git submodule update --init --recursive
 
           # curl
-          - git submodule update --init --recursive
           - cd 3d-party/curl
           - ./buildconf
           - ./configure
           - make
           - make install
-
-          # appUpdater
           - cd ../..
+
+          # libxml2 
+          - cd 3d-party/libxml2
+          - ./configure
+          - make
+          - make install 
+          - cd ../..
+          
+          # appUpdater
           - cmake ./
           - make
 
