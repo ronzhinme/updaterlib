@@ -10,7 +10,7 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - apt-get update
-          - apt-get install -y git cmake build-essential autoconf libtool
+          - apt-get install -y git cmake build-essential autoconf libtool pkg-config
           - git submodule update --init --recursive
 
           # curl
@@ -23,7 +23,7 @@ pipelines:
 
           # libxml2 
           - cd 3d-party/libxml2
-          - ./configure
+          - ./autogen.sh 
           - make
           - make install 
           - cd ../..
