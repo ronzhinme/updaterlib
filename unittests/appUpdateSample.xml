@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updateInfo version="0.0.0">
+<channel type="stable">
+<version id="0.0.0.1" unixtime="0" size="1023" active="true" critical="false" url="" notes="First version" signature=""></version>
+<!--16 September 2004-->
+<version id="0.0.1.1" unixtime="1095292800" size="1023" active="false" critical="true" url="" notesurl="" signature=""></version>
+<version id="0.0.1.1" unixtime="1095292801" size="1023" active="true" critical="true" url="" notes="Active critical version \nInstall It \nAny String" signature=""></version>
+<version id="0.1.1.1" unixtime="1095292802" size="1023" active="true" critical="false" url="" notesurl="" signature=""></version>
+</channel>
+<channel type="alpha"></channel>
+<channel type="beta"></channel>
+<channel type="test"></channel>
+</updateInfo>
