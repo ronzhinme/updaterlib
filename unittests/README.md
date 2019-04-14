@@ -1,0 +1,1 @@
+E:\proj\appUpdater\3d-party\curl\winbuild>nmake /f Makefile.vc mode=dll WITH_SSL=dll SSL_PATH="C:/Program Files (x86)/OpenSSL-Win32/"

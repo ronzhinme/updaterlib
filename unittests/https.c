@@ -27,6 +27,8 @@
 #include <curl/curl.h>
 #include <stdlib.h>
 
+#define SKIP_PEER_VERIFICATION
+
 int main(void)
 {
   CURL *curl;
@@ -75,5 +77,5 @@ int main(void)
 
   curl_global_cleanup();
 
-  return EXIT_SUCCESS; //https not supported yet. //res == CURLE_OK ? EXIT_SUCCESS : EXIT_FAILURE;
+  return res == CURLE_OK ? EXIT_SUCCESS : EXIT_FAILURE;
 }
