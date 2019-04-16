@@ -29,11 +29,12 @@ set(SRC_LIST  updater.h updater.cpp
 
 add_library(${PROJECT_NAME}Static STATIC ${SRC_LIST})
 add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST})
+set_property(TARGET ${PROJECT_NAME}Shared PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (WIN32)
 target_link_libraries(${PROJECT_NAME}Shared "libcurl.dll" "libxml2.dll" "libcrypto.dll" "libssl.dll")
 
 elseif(UNIX)
-target_link_libraries(${PROJECT_NAME}Shared "curl")
-configure_file("${CURL_LIB_PATH}/lib/.libs/libcurl.so.4.5.0" ${PROJECT_BINARY_DIR} COPYONLY)
+target_link_libraries(${PROJECT_NAME}Shared "curl" "xml2" "crypto" "ssl")
+#configure_file("${CURL_LIB_PATH}/lib/.libs/libcurl.so.4.5.0" ${PROJECT_BINARY_DIR} COPYONLY)
 endif()
