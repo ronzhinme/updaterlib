@@ -4,6 +4,7 @@
 
 #include <wchar.h>
 #include <string>
+#include <cstring>
 
 #include "versionInfo.h"
 #include "curlBridge.h"
