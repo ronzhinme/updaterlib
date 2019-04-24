@@ -23,7 +23,7 @@ add_executable(${PROJECT_NAME}_http-post http-post.c)
 add_executable(${PROJECT_NAME}_https-get https.c)
 add_executable(${PROJECT_NAME}_checkVersionInfo checkVersionInfo.cpp)
 add_executable(${PROJECT_NAME}_checkUpdater checkUpdater.cpp)
-
+add_executable(${PROJECT_NAME}_checkDownloadXml checkDownloadXml.cpp)
 
 set(LIBNAME "curl")
 if(WIN32)
@@ -45,6 +45,7 @@ target_link_libraries(${PROJECT_NAME}_https-get ${LIBNAME} "libssl.dll" "libcryp
 target_link_libraries(${PROJECT_NAME}_checkVersionInfo "appUpdaterStatic")
 target_link_libraries(${PROJECT_NAME}_checkUpdater "appUpdaterStatic")
 target_link_libraries(${PROJECT_NAME}_checkUpdater ${LIBNAME} "libssl.dll" "libcrypto.dll")
+target_link_libraries(${PROJECT_NAME}_checkDownloadXml ${LIBNAME} "libssl.dll" "libcrypto.dll" "appUpdaterStatic")
 
 add_test(checkUrl ${PROJECT_NAME}_checkUrl)
 add_test(checkFtp ${PROJECT_NAME}_checkFtp)
@@ -52,3 +53,4 @@ add_test(http-post ${PROJECT_NAME}_http-post)
 add_test(https-get ${PROJECT_NAME}_https-get)
 add_test(checkVersionInfo ${PROJECT_NAME}_checkVersionInfo)
 add_test(checkUpdater ${PROJECT_NAME}_checkUpdater)
+add_test(checkDownloadXml ${PROJECT_NAME}_checkDownloadXml)

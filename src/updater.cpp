@@ -45,7 +45,7 @@ void Updater::onDataReceived(const char *data, size_t dataSize)
 
 void Updater::checkForUpdate()
 {
-    const std::string url("https://bitbucket.org/ronmih/appupdaterlib/src/master/unittests/appUpdateSample.xmlrele  ");
+    const std::string url("https://bitbucket.org/ronmih/appupdaterlib/src/master/unittests/appUpdateSample.xml");
 
     m_curlBridge.onDataReceivedEvent([this](const char *d, size_t l) { this->onDataReceived(d, l); });
     m_curlBridge.getUrlData(url);
