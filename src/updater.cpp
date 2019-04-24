@@ -40,14 +40,16 @@ void Updater::setAutoUpdateInterval(unsigned long hours)
 
 void Updater::onDataReceived(const char *data, size_t dataSize)
 {
+    m_xmlData.append(data);
     printf("%s [%s] [%ld]\n", __FUNCTION__, (const char *)data, dataSize);
 }
 
 void Updater::checkForUpdate()
 {
-    const std::string url("https://bitbucket.org/ronmih/appupdaterlib/src/master/unittests/appUpdateSample.xml");
+    const std::string url("https://www.w3schools.com/xml/note.xml");
 
-    m_curlBridge.onDataReceivedEvent([this](const char *d, size_t l) { this->onDataReceived(d, l); });
+    m_curlBridge.onDataReceivedEvent([this](const char *d, size_t l) mutable { this->onDataReceived(d, l);});
+    m_curlBridge.onDataReceivedFinished([this](){ printf("onDataReceivedFinished:\n%s\n", m_xmlData.c_str());});
     m_curlBridge.getUrlData(url);
 
     // find in XML first update candidate (first cirtical or highest version) - the intaller url and sign-code
