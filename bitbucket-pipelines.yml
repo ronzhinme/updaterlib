@@ -20,14 +20,7 @@ pipelines:
           - make
           - make install
           - cd ../..
-
-          # libxml2 
-          - cd 3d-party/libxml2
-          - ./autogen.sh 
-          - make
-          - make install 
-          - cd ../..
-          
+         
           # appUpdater
           - cmake ./
           - make

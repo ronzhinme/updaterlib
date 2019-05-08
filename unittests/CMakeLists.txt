@@ -1,20 +1,18 @@
 cmake_minimum_required(VERSION 2.8)
 project(curlCheck)
 
-include_directories("${PROJECT_SOURCE_DIR}/../3d-party/curl/include")
-
 set(CURL_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/curl")
-set(XML_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/libxml2")
+set(PUGIXML_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/pugixml")
+
+include_directories(${CURL_LIB_PATH}/include)
+include_directories(${PUGIXML_LIB_PATH}/src)
 
 if (WIN32)
 set(SSL_LIB_PATH $ENV{SSL_PATH})
 set(CURL_PREFIX "builds/libcurl-vc-x86-release-dll-ssl-dll-ipv6-sspi")
-set(XML_PREFIX "win32/bin.msvc")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/lib")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/bin")
 link_directories("${SSL_LIB_PATH}/Lib")
-link_directories("${XML_LIB_PATH}/${XML_PREFIX}")
-
 
 elseif(UNIX)
 set(CURL_PREFIX "lib/.libs")
@@ -34,12 +32,10 @@ set(CURL_LIB "curl")
 set(SSL_LIB "ssl")
 set(CRYPTO_LIB "crypto")
 set(UPDATER_LIB "appUpdaterStatic")
-set(XML_LIB "xml2")
 if(WIN32)
 set(CURL_LIB "libcurl.dll")
 set(SSL_LIB "libssl.dll")
 set(CRYPTO_LIB "libcrypto.dll")
-set(XML_LIB "libxml2.dll")
 endif()
 
 if(WIN32)
@@ -57,7 +53,7 @@ target_link_libraries(${PROJECT_NAME}_https-get ${CURL_LIB} ${SSL_LIB} ${CRYPTO_
 target_link_libraries(${PROJECT_NAME}_checkVersionInfo ${UPDATER_LIB})
 target_link_libraries(${PROJECT_NAME}_checkUpdater ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB} ${UPDATER_LIB})
 target_link_libraries(${PROJECT_NAME}_checkDownloadXml ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB} ${UPDATER_LIB})
-target_link_libraries(${PROJECT_NAME}_checkXmlParser ${XML_LIB} ${UPDATER_LIB})
+target_link_libraries(${PROJECT_NAME}_checkXmlParser ${UPDATER_LIB})
 
 add_test(checkUrl ${PROJECT_NAME}_checkUrl)
 add_test(checkFtp ${PROJECT_NAME}_checkFtp)

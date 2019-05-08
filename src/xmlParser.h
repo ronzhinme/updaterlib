@@ -3,8 +3,7 @@
 #define XMLPARSER_H
 
 #include <string>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
+#include <pugixml.hpp>
 
 class XmlParser
 {
@@ -18,7 +17,7 @@ public:
     void parseXmlData(const std::string & data, size_t dataLength);
 private:
     void getNextCriticalUpdate() const;
-    xmlDocPtr m_xmlDoc;
+    pugi::xml_document m_xmlDoc;
 };
 
 #endif
