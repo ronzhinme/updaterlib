@@ -51,8 +51,8 @@ target_link_libraries(${PROJECT_NAME}_checkFtp ${CURL_LIB} ${SSL_LIB} ${CRYPTO_L
 target_link_libraries(${PROJECT_NAME}_http-post ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB})
 target_link_libraries(${PROJECT_NAME}_https-get ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB})
 target_link_libraries(${PROJECT_NAME}_checkVersionInfo ${UPDATER_LIB})
-target_link_libraries(${PROJECT_NAME}_checkUpdater ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB} ${UPDATER_LIB})
-target_link_libraries(${PROJECT_NAME}_checkDownloadXml ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB} ${UPDATER_LIB})
+target_link_libraries(${PROJECT_NAME}_checkUpdater ${UPDATER_LIB} ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB})
+target_link_libraries(${PROJECT_NAME}_checkDownloadXml ${UPDATER_LIB} ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB})
 target_link_libraries(${PROJECT_NAME}_checkXmlParser ${UPDATER_LIB})
 
 add_test(checkUrl ${PROJECT_NAME}_checkUrl)
