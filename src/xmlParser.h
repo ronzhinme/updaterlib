@@ -13,7 +13,7 @@ public:
     ~XmlParser();
 
     void setCurrentVersion(const VersionInfo& val);
-    bool getLatestVersion(const std::wstring & channelType = std::wstring());
+    bool getUpdateVersion(const std::wstring & channelType = std::wstring());
     bool parseXmlFile(const std::string & filename);
     bool parseXmlData(const std::string & data, size_t dataLength);
 private:

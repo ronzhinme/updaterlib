@@ -91,29 +91,19 @@ bool XmlParser::getNextVersionInChannel(bool isCritical)
     return false;
 }
 
-bool XmlParser::getLatestVersion(const std::wstring & channelType)
+bool XmlParser::getUpdateVersion(const std::wstring & channelType)
 {
     if(!getCurrentChannelType(channelType))
         return false;
 
-    std::cout << "channel: 0) " << m_typeNodeIter->empty() << " 1) " << m_typeNodeIter->name() << " 2) " << m_typeNodeIter->value() << " 3) " << m_typeNodeIter->first_attribute().name() << " 4) " << m_typeNodeIter->first_attribute().value() << std::endl;
-
     if(!getCurrentVersionInChannel())
         return false;
 
-    std::cout << "current version: 0) " << m_curVersionIter->empty() << " 1) " << m_curVersionIter->name() << " 2) " << m_curVersionIter->value() << " 3) " << m_curVersionIter->first_attribute().name() << " 4) " << m_curVersionIter->first_attribute().value() << std::endl;
-
     if(getNextVersionInChannel(true))
-    {
-        std::cout << "next critical version: 0) " << m_nextVersionIter->empty() << " 1) " << m_nextVersionIter->name() << " 2) " << m_nextVersionIter->value() << " 3) " << m_nextVersionIter->first_attribute().name() << " 4) " << m_nextVersionIter->first_attribute().value() << std::endl;
         return true;
-    }
     
     if(getNextVersionInChannel(false))
-    {
-        std::cout << "latest version: 0) " << m_nextVersionIter->empty() << " 1) " << m_nextVersionIter->name() << " 2) " << m_nextVersionIter->value() << " 3) " << m_nextVersionIter->first_attribute().name() << " 4) " << m_nextVersionIter->first_attribute().value() << std::endl;
         return true;
-    }
 
     return false;
 }
