@@ -38,17 +38,17 @@ bool XmlParser::getCurrentChannelType(const std::wstring &channelType)
     if (channelType.compare(L"") == 0)
         return false;
 
-    auto xmlRootElement = m_xmlDoc.parent().begin();
-    auto it = m_xmlDoc.begin();
-    for (auto child = it->begin(); child != it->end(); ++child)
-    {
+    // auto xmlRootElement = m_xmlDoc.parent().begin();
+    // auto it = m_xmlDoc.begin();
+    // for (auto child = it->begin(); child != it->end(); ++child)
+    // {
         // auto val = getPugiAttributeValue(child, "type");
         // if (channelType.compare(val) == 0)
         // {
             // m_typeNodeIter = child;
             // return true;
         // }
-    }
+    // }
     return false;
 }
 
