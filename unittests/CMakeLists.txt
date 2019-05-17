@@ -46,6 +46,8 @@ elseif(UNIX)
 configure_file("${CURL_LIB_PATH}/${CURL_PREFIX}/libcurl.so.4.5.0" ${PROJECT_BINARY_DIR} COPYONLY)
 endif()
 
+configure_file("${PROJECT_SOURCE_DIR}/appUpdateSample.xml" ${PROJECT_BINARY_DIR} COPYONLY)
+
 target_link_libraries(${PROJECT_NAME}_checkUrl ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB})
 target_link_libraries(${PROJECT_NAME}_checkFtp ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB})
 target_link_libraries(${PROJECT_NAME}_http-post ${CURL_LIB} ${SSL_LIB} ${CRYPTO_LIB})

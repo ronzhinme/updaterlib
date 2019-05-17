@@ -5,7 +5,7 @@
 int main()
 {
     XmlParser xmlParser;
-    bool result = xmlParser.parseXmlFile("../../unittests/appUpdateSample.xml");
+    bool result = xmlParser.parseXmlFile("appUpdateSample.xml");
     if(!result)
     {
         printf("xmlParser.parseXmlFile\n");
