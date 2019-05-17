@@ -45,7 +45,7 @@ bool XmlParser::getCurrentChannelType(const std::wstring &channelType)
         auto val = getPugiAttributeValue(child, "type");
         if (channelType.compare(val) == 0)
         {
-            m_typeNodeIter = child;
+            // m_typeNodeIter = child;
             return true;
         }
     }
