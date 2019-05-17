@@ -96,14 +96,14 @@ bool XmlParser::getUpdateVersion(const std::wstring &channelType)
     if (!getCurrentChannelType(channelType))
         return false;
 
-    // if (!getCurrentVersionInChannel())
-    //     return false;
+    if (!getCurrentVersionInChannel())
+        return false;
 
-    // if (getNextVersionInChannel(true))
-    //     return true;
+    if (getNextVersionInChannel(true))
+        return true;
 
-    // if (getNextVersionInChannel(false))
-    //     return true;
+    if (getNextVersionInChannel(false))
+        return true;
 
     return false;
 }
