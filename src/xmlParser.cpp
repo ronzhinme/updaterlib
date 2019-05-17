@@ -3,9 +3,6 @@
 #include "xmlParser.h"
 
 XmlParser::XmlParser()
-    : m_curVersionIter(),
-      m_nextVersionIter(),
-      m_typeNodeIter()
 {
 }
 
@@ -97,17 +94,17 @@ bool XmlParser::getNextVersionInChannel(bool isCritical)
 
 bool XmlParser::getUpdateVersion(const std::wstring &channelType)
 {
-    if (!getCurrentChannelType(channelType))
-        return false;
+    // if (!getCurrentChannelType(channelType))
+    //     return false;
 
-    if (!getCurrentVersionInChannel())
-        return false;
+    // if (!getCurrentVersionInChannel())
+    //     return false;
 
-    if (getNextVersionInChannel(true))
-        return true;
+    // if (getNextVersionInChannel(true))
+    //     return true;
 
-    if (getNextVersionInChannel(false))
-        return true;
+    // if (getNextVersionInChannel(false))
+    //     return true;
 
     return false;
 }
