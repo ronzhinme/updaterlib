@@ -94,8 +94,8 @@ bool XmlParser::getNextVersionInChannel(bool isCritical)
 
 bool XmlParser::getUpdateVersion(const std::wstring &channelType)
 {
-    // if (!getCurrentChannelType(channelType))
-    //     return false;
+    if (!getCurrentChannelType(channelType))
+        return false;
 
     // if (!getCurrentVersionInChannel())
     //     return false;
