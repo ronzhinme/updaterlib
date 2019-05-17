@@ -35,20 +35,19 @@ std::wstring XmlParser::getPugiAttributeValue(const pugi::xml_node_iterator &nod
 
 bool XmlParser::getCurrentChannelType(const std::wstring &channelType)
 {
-    if (channelType.compare(L"") == 0)
+    if (channelType.compare(L"") == 0 || m_xmlDoc.empty())
         return false;
 
-    // auto xmlRootElement = m_xmlDoc.parent().begin();
-    // auto it = m_xmlDoc.begin();
-    // for (auto child = it->begin(); child != it->end(); ++child)
-    // {
-        // auto val = getPugiAttributeValue(child, "type");
-        // if (channelType.compare(val) == 0)
-        // {
-            // m_typeNodeIter = child;
-            // return true;
-        // }
-    // }
+    auto updateInfoNode = m_xmlDoc.first_child();
+    for (auto child = updateInfoNode.begin(); child != updateInfoNode.end(); ++child)
+    {
+        auto val = getPugiAttributeValue(child, "type");
+        if (channelType.compare(val) == 0)
+        {
+            m_typeNodeIter = child;
+            return true;
+        }
+    }
     return false;
 }
 
