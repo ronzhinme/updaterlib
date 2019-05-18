@@ -32,8 +32,8 @@ pipelines:
           - ls ${BITBUCKET_CLONE_DIR}/src/*
           
         artifacts:
-          - /opt/atlassian/pipelines/agent/build/*appUpdaterStatic.*
-          - /opt/atlassian/pipelines/agent/build/*appUpdaterShared.*
+          - ${BITBUCKET_CLONE_DIR}/src/*appUpdaterStatic.*
+          - ${BITBUCKET_CLONE_DIR}/src/*appUpdaterShared.*
           - ${BITBUCKET_CLONE_DIR}/src/updater.h
 
     - step:
