@@ -28,6 +28,11 @@ pipelines:
           # ctest
           - cd /opt/atlassian/pipelines/agent/build
           - ctest -j10 -C Release -T test --output-on-failure
+          
+        artifacts:
+          - /opt/atlassian/pipelines/agent/build/*appUpdaterStatic.*
+          - /opt/atlassian/pipelines/agent/build/*appUpdaterShared.*
+          - ${BITBUCKET_CLONE_DIR}/src/updater.h
 
     - step:
         name: Deploy to production
@@ -36,4 +41,4 @@ pipelines:
         script:
           - apt-get update
           - apt-get install -y curl
-          - curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"target/appUpdaterShared.* target/appUpdaterStatic.* src/updater.h"
+          - curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"*appUpdaterShared.* *appUpdaterStatic.* updater.h"
