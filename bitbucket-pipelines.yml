@@ -28,9 +28,7 @@ pipelines:
           # ctest
           - cd /opt/atlassian/pipelines/agent/build
           - ctest -j10 -C Release -T test --output-on-failure
-          - ls /opt/atlassian/pipelines/agent/build/*
-          - ls ${BITBUCKET_CLONE_DIR}/src/*
-          
+         
         artifacts:
           - ${BITBUCKET_CLONE_DIR}/src/*appUpdaterStatic.*
           - ${BITBUCKET_CLONE_DIR}/src/*appUpdaterShared.*

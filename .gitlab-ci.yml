@@ -1,0 +1,52 @@
+
+stages:
+  - test
+  - build
+#  - deploy
+
+linux_build:
+    stage: build
+    image: ubuntu:14.04
+    before_script:
+      - apt-get update
+      - apt-get install -y git cmake build-essential autoconf libtool pkg-config libssl-dev
+      - git submodule update --init --recursive
+
+    script: # Modify the commands below to build your repository.
+      # curl
+      - cd 3d-party/curl
+      - ./buildconf
+      - ./configure
+      - make
+      - make install
+      - cd ../..
+      
+      # appUpdater
+      - mkdir out
+      - cd out
+      - cmake ../
+      - cd ..
+      - cmake --build out --config Release
+     
+      # ctest
+      - cd out
+      - ctest -j10 -C Release -T test --output-on-failure
+      - cd ..
+
+      # prepare artifacts
+      - cp out/src/*appUpdaterShared.* ./
+      - cp out/src/*appUpdaterStatic.* ./
+      - cp src/updater.h ./
+    artifacts:
+        paths:
+          - ./*appUpdaterShared.*
+          - ./*appUpdaterStatic.*
+          - ./updater.h
+        expire_in: 3 day
+     
+.linux_deploy:
+    stage: deploy
+    script:
+      - apt-get update
+      - apt-get install -y curl
+      - curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"*appUpdaterShared.* *appUpdaterStatic.* updater.h"
