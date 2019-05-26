@@ -2,7 +2,7 @@
 stages:
   - test
   - build
-#  - deploy
+  - deploy
 
 linux_build:
     stage: build
@@ -38,15 +38,22 @@ linux_build:
       - cp out/src/*appUpdaterStatic.* ./
       - cp src/updater.h ./
     artifacts:
+        name: linux_release
         paths:
           - ./*appUpdaterShared.*
           - ./*appUpdaterStatic.*
           - ./updater.h
         expire_in: 3 day
      
-.linux_deploy:
+linux_deploy:
+    variables:
+      LINUX_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=linux_build"
+      RELEASES_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$CI_COMMIT_TAG/assets/links"
     stage: deploy
+    only:
+      - tags
     script:
       - apt-get update
       - apt-get install -y curl
-      - curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"*appUpdaterShared.* *appUpdaterStatic.* updater.h"
+      - echo "$LINUX_ARTIFACT_URL | $RELEASES_URL"
+      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="linux" -d url="$LINUX_ARTIFACT_URL" --url "$RELEASES_URL"'
