@@ -12,25 +12,25 @@ int main()
         return EXIT_FAILURE;
     }
 
-    xmlParser.setCurrentVersion(VersionInfo(L"0.0.0.1"));
-    bool stableResult = xmlParser.getUpdateVersion(L"stable");
+    xmlParser.versionInfo = VersionInfo("0.0.0.1");
+    bool stableResult = xmlParser.getUpdateVersion("stable");
     if(!stableResult)
     {
-        printf(R"(getUpdateVersion(L"stable")\n)");
+        printf(R"(getUpdateVersion("stable")\n)");
         return EXIT_FAILURE;
     }
     
-    bool alphaResult = xmlParser.getUpdateVersion(L"alpha");
+    bool alphaResult = xmlParser.getUpdateVersion("alpha");
     if(!alphaResult)
     {
-        printf(R"(getUpdateVersion(L"alpha")\n)");
+        printf(R"(getUpdateVersion("alpha")\n)");
         return EXIT_FAILURE;
     }
 
-    bool betaResult = xmlParser.getUpdateVersion(L"beta");
+    bool betaResult = xmlParser.getUpdateVersion("beta");
     if(betaResult)
     {
-        printf(R"(getUpdateVersion(L"beta")\n)");
+        printf(R"(getUpdateVersion("beta")\n)");
         return EXIT_FAILURE;
     }
 

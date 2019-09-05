@@ -1,34 +1,53 @@
 
 #include "versionInfo.h"
+#include <iostream>
+#include <algorithm>
 
-VersionInfo::VersionInfo(const std::wstring &val)
+VersionInfo::~VersionInfo()
 {
-    auto wstr = val;
-    for (std::wstring::iterator i = wstr.begin(); i != wstr.end(); ++i)
-    {
-        if (*i == L'.')
-        {
-            wstr = wstr.replace(i, i + 1, L" ");
-        }
-    }
-
-    wchar_t *pEnd;
-    high = wcstoul(wstr.c_str(), &pEnd, 10);
-    low = wcstoul(pEnd, &pEnd, 10);
-    release = wcstoul(pEnd, &pEnd, 10);
-    build = wcstoul(pEnd, &pEnd, 10);
 }
 
-const std::wstring VersionInfo::toString() const
+VersionInfo::VersionInfo()
+    : high(0), low(0), release(0), build(0)
 {
-    return std::to_wstring(high) + L"." + std::to_wstring(low) + L"." + std::to_wstring(release) + L"." + std::to_wstring(build);
+}
+
+std::string getStringRef(const std::string val)
+{
+    return val;
+}
+
+VersionInfo::VersionInfo(const std::string & val)
+{
+    _fromString(val);
+}
+
+VersionInfo::VersionInfo(const char *val, size_t valLen)
+{
+    _fromString(std::string(val, valLen));
+}
+
+VersionInfo::VersionInfo(const VersionInfo &src)
+{
+    _copyData(src);
+}
+
+std::string VersionInfo::getVersionString() const
+{
+    return m_VersionString;
+}
+
+std::string && VersionInfo::toString()
+{
+    m_VersionString = std::to_string(high) + "." + std::to_string(low) + "." + std::to_string(release) + "." + std::to_string(build);
+    return getVersionString();
 }
 
 int VersionInfo::compare(const VersionInfo &vi) const
 {
     if (high == vi.high && low == vi.low && release == vi.release && build == vi.build)
         return 0;
-        
+
     if (high < vi.high ||
         (high == vi.high && low < vi.low) ||
         (high == vi.high && low == vi.low && release < vi.release) ||
@@ -42,11 +61,28 @@ int VersionInfo::compare(const VersionInfo &vi) const
         return 1;
 }
 
-VersionInfo &VersionInfo::operator=(const VersionInfo &val)
+VersionInfo &VersionInfo::operator=(const VersionInfo &src)
 {
-    this->high = val.high;
-    this->low = val.low;
-    this->release = val.release;
-    this->build = val.build;
+    _copyData(src);
     return *this;
+}
+
+void VersionInfo::_copyData(const VersionInfo &src)
+{
+    this->high = src.high;
+    this->low = src.low;
+    this->release = src.release;
+    this->build = src.build;
+}
+
+void VersionInfo::_fromString(const std::string & val)
+{
+    std::string str(std::move(val));
+    std::replace(str.begin(), str.end(), '.', ' ');
+
+    char *pEnd;
+    high = strtoul(str.c_str(), &pEnd, 10);
+    low = strtoul(pEnd, &pEnd, 10);
+    release = strtoul(pEnd, &pEnd, 10);
+    build = strtoul(pEnd, &pEnd, 10);
 }

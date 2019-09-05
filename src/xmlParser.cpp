@@ -22,44 +22,52 @@ bool XmlParser::parseXmlData(const std::string &data, size_t dataLength)
     return result.operator bool();
 }
 
-std::wstring XmlParser::getPugiAttributeValue(const pugi::xml_node_iterator &nodeIter, const pugi::char_t *attributeName)
+std::string XmlParser::_getPugiAttributeValue(const pugi::xml_node_iterator &nodeIter,
+                                             const pugi::char_t *attributeName)
 {
-    auto pugiVal = nodeIter->attribute(attributeName).as_string();
+    auto val = nodeIter->attribute(attributeName).as_string();
 #ifdef PUGIXML_WCHAR_MODE
-    return pugiVal;
+    return pugi::as_utf8(val);
 #else
-    return pugi::as_wide(pugiVal);
-    ;
+    return val;
 #endif
 }
 
-bool XmlParser::getCurrentChannelType(const std::wstring &channelType)
+std::string XmlParser::getNextVersionAttribute(const std::string &attribute)
 {
-    if (channelType.compare(L"") == 0 || m_xmlDoc.empty())
+    if (m_nextVersionIter->empty() || attribute.empty())
+        return "";
+
+    return _getPugiAttributeValue(m_nextVersionIter, attribute.c_str());
+}
+
+bool XmlParser::_getCurrentChannelType(const std::string &channelType)
+{
+    if (channelType.compare("") == 0 || m_xmlDoc.empty())
         return false;
 
     auto updateInfoNode = m_xmlDoc.first_child();
-    for (auto child = updateInfoNode.begin(); child != updateInfoNode.end(); ++child)
+    for (auto it = updateInfoNode.begin(); it != updateInfoNode.end(); ++it)
     {
-        auto val = getPugiAttributeValue(child, "type");
+        auto val = _getPugiAttributeValue(it, "type");
         if (channelType.compare(val) == 0)
         {
-            m_typeNodeIter = child;
+            m_typeNodeIter = it;
             return true;
         }
     }
     return false;
 }
 
-bool XmlParser::getCurrentVersionInChannel()
+bool XmlParser::_getCurrentVersionInChannel()
 {
     if (m_typeNodeIter->empty())
         return false;
 
     for (auto it = m_typeNodeIter->begin(); it != m_typeNodeIter->end(); ++it)
     {
-        auto val = getPugiAttributeValue(it, "id");
-        if (m_versionInfo.compare(VersionInfo(val)) == 0)
+        auto val = _getPugiAttributeValue(it, "id");
+        if (versionInfo.compare(VersionInfo(val)) == 0)
         {
             m_curVersionIter = it;
             return true;
@@ -68,16 +76,16 @@ bool XmlParser::getCurrentVersionInChannel()
     return false;
 }
 
-bool XmlParser::getNextVersionInChannel(bool isCritical)
+bool XmlParser::_getNextVersionInChannel(bool isCritical)
 {
     if (m_typeNodeIter->empty())
         return false;
 
     for (auto it = m_typeNodeIter->begin(); it != m_typeNodeIter->end(); ++it)
     {
-        auto val = getPugiAttributeValue(it, "id");
+        auto val = _getPugiAttributeValue(it, "id");
         if (it->attribute("active").as_bool() &&
-            m_versionInfo.compare(VersionInfo(val)) < 0)
+            versionInfo.compare(VersionInfo(val)) < 0)
         {
             m_nextVersionIter = it;
             if (it->attribute("critical").as_bool() && isCritical)
@@ -91,24 +99,19 @@ bool XmlParser::getNextVersionInChannel(bool isCritical)
     return false;
 }
 
-bool XmlParser::getUpdateVersion(const std::wstring &channelType)
+bool XmlParser::getUpdateVersion(const std::string &channelType)
 {
-    if (!getCurrentChannelType(channelType))
+    if (!_getCurrentChannelType(channelType))
         return false;
 
-    if (!getCurrentVersionInChannel())
+    if (!_getCurrentVersionInChannel())
         return false;
 
-    if (getNextVersionInChannel(true))
+    if (_getNextVersionInChannel(true))
         return true;
 
-    if (getNextVersionInChannel(false))
+    if (_getNextVersionInChannel(false))
         return true;
 
     return false;
-}
-
-void XmlParser::setCurrentVersion(const VersionInfo &val)
-{
-    m_versionInfo = val;
 }
