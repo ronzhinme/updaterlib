@@ -4,18 +4,29 @@
 
 #include <string>
 
-struct VersionInfo
+class VersionInfo
 {
+public:
     unsigned long high;
     unsigned long low;
     unsigned long release;
     unsigned long build;
 
-    VersionInfo():high(0), low(0), release(0), build(0) {}
-    VersionInfo(const std::wstring & val);
-    const std::wstring toString() const; 
+    VersionInfo();
+    ~VersionInfo();
+    VersionInfo(const std::string & val);
+    VersionInfo(const char* val, size_t valLen);
+    VersionInfo(const VersionInfo& src);
+    VersionInfo & operator = (const VersionInfo & src);
+
+    std::string && toString(); 
     int compare(const VersionInfo & vi) const;
-    VersionInfo & operator = (const VersionInfo & val);
+    
+private:
+    std::string m_VersionString;
+    std::string getVersionString() const;
+    void _copyData(const VersionInfo & src);
+    void _fromString(const std::string & val);
 };
 
 #endif

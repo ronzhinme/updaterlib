@@ -10,6 +10,9 @@ include_directories(${PUGIXML_LIB_PATH}/src)
 if (WIN32)
 set(SSL_LIB_PATH $ENV{SSL_PATH})
 set(CURL_PREFIX "builds/libcurl-vc-x86-release-dll-ssl-dll-ipv6-sspi")
+
+include_directories(${SSL_LIB_PATH}/include)
+
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/lib")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/bin")
 link_directories("${SSL_LIB_PATH}/Lib")
@@ -29,7 +32,7 @@ set(SRC_LIST ${PUGIXML_SRC}
              xmlParser.h xmlParser.cpp)
 
 add_library(${PROJECT_NAME}Static STATIC ${SRC_LIST})
-add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST})
+add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST} updaterInterface.h updaterInterface.cpp)
 set_property(TARGET ${PROJECT_NAME}Shared PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (WIN32)

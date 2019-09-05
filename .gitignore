@@ -6,3 +6,4 @@ c_cpp_properties.json
 src/version.h
 .vscode/*
 3d-party/*
+CMakeCache.txt

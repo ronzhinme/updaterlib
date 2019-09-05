@@ -1,18 +1,19 @@
+<!-- VSCode Win-->
 <?xml version="1.0" encoding="utf-8"?>
 <updateInfo>
 <channel type="stable">
 <version id="0.0.0.1" unixtime="0" size="1023" active="true" critical="false" url="" notes="First version" signature=""></version>
 <!--16 September 2004-->
-<version id="0.0.1.1" unixtime="1095292800" size="1023" active="false" critical="true" url="" notesurl="" signature=""></version>
+<version id="0.0.1.1" unixtime="1095292800" size="1023" active="false" critical="true" url="" notes="" signature=""></version>
 <version id="0.0.1.1" unixtime="1095292801" size="1023" active="true" critical="true" url="" notes="Active critical version \nInstall It \nAny String" signature=""></version>
-<version id="0.1.1.1" unixtime="1095292802" size="1023" active="true" critical="false" url="" notesurl="" signature=""></version>
+<version id="0.1.1.1" unixtime="1095292802" size="1023" active="true" critical="false" url="" notes="" signature=""></version>
 </channel>
 <channel type="alpha">
-<version id="0.0.0.1" unixtime="0" size="1023" active="true" critical="false" url="" notes="First version" signature=""></version>
+<version id="0.0.0.1" unixtime="0" size="1023" active="true" critical="false" url="https://github.com/qTox/qTox/releases/download/v1.16.3/qTox.dmg" notes="First version" signature=""></version>
 <!--16 September 2004-->
-<version id="0.0.1.1" unixtime="1095292800" size="1023" active="false" critical="true" url="" notesurl="" signature=""></version>
+<version id="0.0.1.1" unixtime="1095292800" size="1023" active="false" critical="true" url="" notes="" signature=""></version>
 <version id="0.0.1.1" unixtime="1095292801" size="1023" active="true" critical="false" url="" notes="Active critical version \nInstall It \nAny String" signature=""></version>
-<version id="0.1.1.1" unixtime="1095292802" size="1023" active="true" critical="false" url="" notesurl="" signature=""></version>
+<version id="0.1.1.1" unixtime="1095292802" size="16600528" active="true" critical="false" url="https://github.com/qTox/qTox/releases/download/v1.16.3/setup-qtox-x86_64-release.exe" notes="" signature="fe2375b2bb80f91c041df08181cf66cc216c05e9e9564d6598ce2ef0f9e2052d367b8f89bc3b78b7bf21a85244e1ecfb77d616d49e6194ea107951a4dbf901fa"></version>
 </channel>
 <channel type="beta"></channel>
 <channel type="test"></channel>
