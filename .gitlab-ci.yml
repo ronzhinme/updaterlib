@@ -48,12 +48,14 @@ linux_build:
 linux_deploy:
     variables:
       LINUX_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=linux_build"
-      RELEASES_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$CI_COMMIT_TAG/assets/links"
+      RELEASES_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
+      RELEASES_ASSETS_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$CI_COMMIT_TAG/assets/links"
     stage: deploy
     only:
       - tags
     script:
       - apt-get update
       - apt-get install -y curl
-      - echo "$LINUX_ARTIFACT_URL | $RELEASES_URL"
-      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="linux" -d url="$LINUX_ARTIFACT_URL" --url "$RELEASES_URL"'
+      - echo "$LINUX_ARTIFACT_URL | $RELEASES_URL | $RELEASES_ASSETS_URL"     
+      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name=$CI_COMMIT_TAG -d url="$LINUX_ARTIFACT_URL" --url "$RELEASES_URL"'
+      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="linux" -d url="$LINUX_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
