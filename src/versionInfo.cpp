@@ -37,7 +37,7 @@ std::string VersionInfo::getVersionString() const
     return m_VersionString;
 }
 
-std::string && VersionInfo::toString()
+std::string VersionInfo::toString()
 {
     m_VersionString = std::to_string(high) + "." + std::to_string(low) + "." + std::to_string(release) + "." + std::to_string(build);
     return getVersionString();

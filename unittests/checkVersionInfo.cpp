@@ -7,7 +7,7 @@ int main()
 {
     // toString()
     VersionInfo vi;
-    auto && v = vi.toString();
+    auto v = vi.toString();
 
     if (vi.compare(VersionInfo("0.0.0.0")) != 0)
     {

@@ -13,7 +13,7 @@ void setCurrentVersion(UPDATER_PTR updater, const char *val, size_t len)
 
 void getCurrentVersion(UPDATER_PTR updater, char *val, size_t len)
 {
-    auto &&data = ((Updater *)updater)->versionInfo.toString();
+    auto data = ((Updater *)updater)->versionInfo.toString();
     if (data.length() > len)
         return;
 
@@ -23,7 +23,7 @@ void getCurrentVersion(UPDATER_PTR updater, char *val, size_t len)
 size_t getNextVersionAttribute(UPDATER_PTR updater, char *out, size_t outLen, const char *attribute, size_t attributeLen)
 {
 
-    auto &&data = ((Updater *)updater)->getNextVersionAttribute(std::string(attribute, attributeLen));
+    auto data = ((Updater *)updater)->getNextVersionAttribute(std::string(attribute, attributeLen));
 
     if (data.length() > outLen)
         memcpy(out, data.c_str(), outLen);
@@ -46,7 +46,7 @@ void setInfoUrl(UPDATER_PTR updater, const char *val, size_t len)
 
 void getInfoUrl(UPDATER_PTR updater, char *val, size_t len)
 {
-    auto &&data = ((Updater *)updater)->getVersionInfoUrl();
+    auto data = ((Updater *)updater)->getVersionInfoUrl();
     if (data.length() > len)
         return;
 
@@ -61,7 +61,7 @@ void setChannel(UPDATER_PTR updater, const char *val, size_t len)
 
 void getChannel(UPDATER_PTR updater, char *val, size_t len)
 {
-    auto &&data = ((Updater *)updater)->getChannel();
+    auto data = ((Updater *)updater)->getChannel();
     if (data.length() > len)
         return;
 

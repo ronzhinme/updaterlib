@@ -19,7 +19,7 @@ public:
     VersionInfo(const VersionInfo& src);
     VersionInfo & operator = (const VersionInfo & src);
 
-    std::string && toString(); 
+    std::string toString(); 
     int compare(const VersionInfo & vi) const;
     
 private:
