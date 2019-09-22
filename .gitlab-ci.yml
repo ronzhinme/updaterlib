@@ -1,4 +1,3 @@
-
 stages:
   - test
   - build
@@ -22,20 +21,20 @@ linux_build:
       - cd ../..
       
       # appUpdater
-      - mkdir out
-      - cd out
+      - mkdir build
+      - cd build
       - cmake ../
       - cd ..
-      - cmake --build out --config Release
+      - cmake --build build --config Release
      
       # ctest
-      - cd out
+      - cd build
       - ctest -j10 -C Release -T test --output-on-failure
       - cd ..
 
       # prepare artifacts
-      - cp out/src/*appUpdaterShared.* ./
-      - cp out/src/*appUpdaterStatic.* ./
+      - cp build/src/*appUpdaterShared.* ./
+      - cp build/src/*appUpdaterStatic.* ./
       - cp src/updater.h ./
     artifacts:
         name: linux_release
