@@ -234,7 +234,8 @@ void Updater::runInstaller()
         operationResult()(TYPE_RUN_INSTALLER, RESULT_INPROGRESS, ExtraInfo());
     }
 
-    system(UPDATE_FILENAME.c_str());
+    auto argStr = getNextVersionAttribute("updateargs");
+    system((UPDATE_FILENAME + " " + argStr).c_str());
 
     if (m_operationResult != NULL)
     {
