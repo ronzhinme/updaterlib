@@ -11,7 +11,7 @@ linux_build:
       - apt-get install -y git cmake build-essential autoconf libtool pkg-config libssl-dev
       - git submodule update --init --recursive
 
-    script: # Modify the commands below to build your repository.
+    script:
       # curl
       - cd 3d-party/curl
       - ./buildconf
@@ -43,7 +43,48 @@ linux_build:
           - ./*appUpdaterStatic.*
           - ./updater.h
         expire_in: 3 day
+    tags:
+      - linux
      
+win_build: 
+    stage: build
+    variables:
+        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
+    before_script:
+        - git submodule update --init --recursive
+    script:
+        # curl
+        - cmd /c 'mv 3d-party/curl/src/tool_hugehelp.c.cvs 3d-party/curl/src/tool_hugehelp.c &
+                  set PATH = %WIN_MSVC_SHELL%;%PATH% &
+                  vcvarsall x86 &
+                  cd 3d-party/curl/winbuild & 
+                  nmake /f Makefile.vc mode=dll WITH_SSL=dll SSL_PATH="%SSL_PATH%"'
+        # appUpdater
+        #- mkdir build
+        #- cd build
+        #- cmake ../
+        #- cd ..
+        #- cmake --build build --config Release
+      
+        # ctest
+        #- cd build
+        #- ctest -j10 -C Release -T test --output-on-failure
+        #- cd ..
+
+        # prepare artifacts
+        # - cp build/src/*appUpdaterShared.* ./
+        # - cp build/src/*appUpdaterStatic.* ./
+        # - cp src/updater.h ./
+      # artifacts:
+      #     name: windows_release
+      #     paths:
+      #       - ./*appUpdaterShared.*
+      #       - ./*appUpdaterStatic.*
+      #       - ./updater.h
+      #     expire_in: 3 day
+    tags:
+      - win
+
 linux_deploy:
     variables:
       LINUX_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=linux_build"
