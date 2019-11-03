@@ -42,7 +42,7 @@ configure_file("${CURL_LIB_PATH}/${CURL_PREFIX}/bin/libcurl.dll" "${PROJECT_BINA
 configure_file("${SSL_LIB_PATH}/libcrypto-1_1.dll" "${PROJECT_BINARY_DIR}/Release" COPYONLY)
 configure_file("${SSL_LIB_PATH}/libssl-1_1.dll" "${PROJECT_BINARY_DIR}/Release" COPYONLY)
 elseif(UNIX)
-configure_file("${CURL_LIB_PATH}/${CURL_PREFIX}/libcurl.so.4.5.0" ${PROJECT_BINARY_DIR} COPYONLY)
+configure_file("${CURL_LIB_PATH}/${CURL_PREFIX}/libcurl.so.4.6.0" ${PROJECT_BINARY_DIR} COPYONLY)
 endif()
 
 configure_file("${PROJECT_SOURCE_DIR}/appUpdateSample.xml" ${PROJECT_BINARY_DIR} COPYONLY)
