@@ -54,34 +54,32 @@ win_build:
         - git submodule update --init --recursive
     script:
         # curl
-        - cmd /c 'mv 3d-party/curl/src/tool_hugehelp.c.cvs 3d-party/curl/src/tool_hugehelp.c &
+        - cmd /c 'chcp 866 & 
                   set PATH = %WIN_MSVC_SHELL%;%PATH% &
                   vcvarsall x86 &
-                  cd 3d-party/curl/winbuild & 
-                  nmake /f Makefile.vc mode=dll WITH_SSL=dll SSL_PATH="%SSL_PATH%"'
+                  cd 3d-party/curl &
+                  buildconf.bat &
+                  cd winbuild & 
+                  nmake /f Makefile.vc mode=dll WITH_SSL=dll SSL_PATH="%SSL_PATH%" &
+                  cd ../../..'
         # appUpdater
-        #- mkdir build
-        #- cd build
-        #- cmake ../
-        #- cd ..
-        #- cmake --build build --config Release
+        - mkdir build
+        - cd build
+        - cmake ../
+        - cd ..
+        - cmake --build build --config Release
       
         # ctest
-        #- cd build
-        #- ctest -j10 -C Release -T test --output-on-failure
-        #- cd ..
+        - cd build
+        - ctest -j10 -C Release -T test --output-on-failure
+        - cd ..
 
-        # prepare artifacts
-        # - cp build/src/*appUpdaterShared.* ./
-        # - cp build/src/*appUpdaterStatic.* ./
-        # - cp src/updater.h ./
-      # artifacts:
-      #     name: windows_release
-      #     paths:
-      #       - ./*appUpdaterShared.*
-      #       - ./*appUpdaterStatic.*
-      #       - ./updater.h
-      #     expire_in: 3 day
+    artifacts:
+        name: windows_release
+        paths:
+          - ./build/src/Release/*
+          - ./src/updater.h
+        expire_in: 3 day
     tags:
       - win
 
