@@ -17,6 +17,15 @@ link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/lib")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/bin")
 link_directories("${SSL_LIB_PATH}/Lib")
 
+elseif(APPLE)
+set(SSL_LIB_PATH $ENV{SSL_PATH})
+set(CURL_PREFIX "lib/.libs")
+
+include_directories(${SSL_LIB_PATH}/include)
+
+link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}")
+link_directories("${SSL_LIB_PATH}/lib")
+
 elseif(UNIX)
 set(CURL_PREFIX "lib/.libs")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}")
