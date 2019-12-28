@@ -83,6 +83,48 @@ win_build:
     tags:
       - win
 
+macos_build:
+    stage: build
+    variables:
+      SSL_PATH: '/usr/local/opt/openssl@1.1'
+    before_script:
+      - git submodule update --init --recursive
+
+    script:
+      # curl
+      - cd 3d-party/curl
+      - ./buildconf
+      - ./configure --with-ssl=${SSL_PATH}
+      - make
+      - make install
+      - cd ../..
+      
+      # appUpdater
+      - mkdir build
+      - cd build
+      - cmake ../
+      - cd ..
+      - cmake --build build --config Release
+     
+      # ctest
+      - cd build
+      - ctest -j10 -C Release -T test --output-on-failure
+      - cd ..
+
+      # prepare artifacts
+      - cp build/src/*appUpdaterShared.* ./
+      - cp build/src/*appUpdaterStatic.* ./
+      - cp src/updater.h ./
+    artifacts:
+        name: macos_release
+        paths:
+          - ./*appUpdaterShared.*
+          - ./*appUpdaterStatic.*
+          - ./updater.h
+        expire_in: 3 day
+    tags:
+      - macos
+      
 linux_deploy:
     variables:
       LINUX_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=linux_build"
