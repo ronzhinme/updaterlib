@@ -46,6 +46,9 @@ set_property(TARGET ${PROJECT_NAME}Shared PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (WIN32)
 target_link_libraries(${PROJECT_NAME}Shared "libcurl.dll" "libcrypto.dll" "libssl.dll")
+configure_file("${CURL_LIB_PATH}/${CURL_PREFIX}/bin/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+configure_file("${SSL_LIB_PATH}/libcrypto-1_1.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+configure_file("${SSL_LIB_PATH}/libssl-1_1.dll" ${PROJECT_BINARY_DIR} COPYONLY)
 
 elseif(UNIX)
 target_link_libraries(${PROJECT_NAME}Shared "curl" "crypto" "ssl")
