@@ -36,12 +36,14 @@ linux_build:
       - cp build/src/*appUpdaterShared.* ./
       - cp build/src/*appUpdaterStatic.* ./
       - cp src/updater.h ./
+      - cp src/updaterInterface.h ./
     artifacts:
         name: linux_release
         paths:
           - ./*appUpdaterShared.*
           - ./*appUpdaterStatic.*
           - ./updater.h
+          - ./updaterInterface.h
         expire_in: 3 day
     tags:
       - linux
@@ -78,7 +80,9 @@ win_build:
         name: windows_release
         paths:
           - ./build/src/Release/*
+          - ./build/src/*.dll
           - ./src/updater.h
+          - ./src/updaterInterface.h
         expire_in: 3 day
     tags:
       - win
@@ -115,19 +119,24 @@ macos_build:
       - cp build/src/*appUpdaterShared.* ./
       - cp build/src/*appUpdaterStatic.* ./
       - cp src/updater.h ./
+      - cp src/updaterInterface.h ./
     artifacts:
         name: macos_release
         paths:
           - ./*appUpdaterShared.*
           - ./*appUpdaterStatic.*
           - ./updater.h
+          - ./updaterInterface.h
         expire_in: 3 day
     tags:
       - macos
       
-linux_deploy:
+deploy:
+    image: ubuntu:14.04
     variables:
       LINUX_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=linux_build"
+      WIN_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=win_build"
+      MAC_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=mac_build"
       RELEASES_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
       RELEASES_ASSETS_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$CI_COMMIT_TAG/assets/links"
     stage: deploy
@@ -136,6 +145,11 @@ linux_deploy:
     script:
       - apt-get update
       - apt-get install -y curl
-      - echo "$LINUX_ARTIFACT_URL | $RELEASES_URL | $RELEASES_ASSETS_URL"     
-      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name=$CI_COMMIT_TAG -d url="$LINUX_ARTIFACT_URL" --url "$RELEASES_URL"'
+      - echo "MAC_ARTIFACT_URL | $WIN_ARTIFACT_URL | LINUX_ARTIFACT_URL | $RELEASES_URL | $RELEASES_ASSETS_URL | $CI_COMMIT_TAG" 
+      - 'curl -X DELETE -H "PRIVATE-TOKEN: $fullAccessToken" -d tag_name=$CI_COMMIT_TAG --url "$RELEASES_URL/$CI_COMMIT_TAG"'    
+      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name=$CI_COMMIT_TAG -d tag_name=$CI_COMMIT_TAG -d description="release" --url "$RELEASES_URL"'
       - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="linux" -d url="$LINUX_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
+      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="windows" -d url="$WIN_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
+      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="mac" -d url="$MAC_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
+    tags:
+      - linux
