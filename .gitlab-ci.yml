@@ -1,54 +1,45 @@
 stages:
-  - test
-  - build
-  - deploy
+    - test
+    - build
+    - deploy
 
-linux_build:
+.linux_build_job: &linux_build_job
     stage: build
     image: ubuntu:14.04
     before_script:
-      - apt-get update
-      - apt-get install -y git cmake build-essential autoconf libtool pkg-config libssl-dev
-      - git submodule update --init --recursive
-
+        - apt-get update
+        - apt-get install -y git cmake build-essential autoconf libtool pkg-config libssl-dev
+        - git submodule update --init --recursive
     script:
-      # curl
-      - cd 3d-party/curl
-      - ./buildconf
-      - ./configure
-      - make
-      - make install
-      - cd ../..
-      
-      # appUpdater
-      - mkdir build
-      - cd build
-      - cmake ../
-      - cd ..
-      - cmake --build build --config Release
-     
-      # ctest
-      - cd build
-      - ctest -j10 -C Release -T test --output-on-failure
-      - cd ..
+        # curl
+        - cd 3d-party/curl
+        - ./buildconf
+        - ./configure
+        - make
+        - make install
+        - cd ../..
+    
+        # appUpdater
+        - mkdir build
+        - cd build
+        - cmake ../
+        - cd ..
+        - cmake --build build --config Release
+        
+        # ctest
+        - cd build
+        - ctest -j10 -C Release -T test --output-on-failure
+        - cd ..
 
-      # prepare artifacts
-      - cp build/src/*appUpdaterShared.* ./
-      - cp build/src/*appUpdaterStatic.* ./
-      - cp src/updater.h ./
-      - cp src/updaterInterface.h ./
-    artifacts:
-        name: linux_release
-        paths:
-          - ./*appUpdaterShared.*
-          - ./*appUpdaterStatic.*
-          - ./updater.h
-          - ./updaterInterface.h
-        expire_in: 3 day
+        # prepare artifacts
+        - cp build/src/*appUpdaterShared.* ./
+        - cp build/src/*appUpdaterStatic.* ./
+        - cp src/updater.h ./
+        - cp src/updaterInterface.h ./
     tags:
-      - linux
-     
-win_build: 
+        - linux
+
+.win_build_job: &win_build_job
     stage: build
     variables:
         WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
@@ -57,99 +48,158 @@ win_build:
     script:
         # curl
         - cmd /c 'chcp 866 & 
-                  set PATH = %WIN_MSVC_SHELL%;%PATH% &
-                  vcvarsall x86 &
-                  cd 3d-party/curl &
-                  buildconf.bat &
-                  cd winbuild & 
-                  nmake /f Makefile.vc mode=dll WITH_SSL=dll SSL_PATH="%SSL_PATH%" &
-                  cd ../../..'
+                set PATH = %WIN_MSVC_SHELL%;%PATH% &
+                vcvarsall x86 &
+                cd 3d-party/curl &
+                buildconf.bat &
+                cd winbuild & 
+                nmake /f Makefile.vc mode=dll WITH_SSL=dll SSL_PATH="%SSL_PATH%" &
+                cd ../../..'
         # appUpdater
         - mkdir build
         - cd build
         - cmake ../
         - cd ..
         - cmake --build build --config Release
-      
+    
+        # ctest
+        - cd build
+        - ctest -j10 -C Release -T test --output-on-failure
+        - cd ..
+    tags:
+    - win
+
+.mac_build_job: &mac_build_job
+    stage: build
+    variables:
+        SSL_PATH: '/usr/local/opt/openssl@1.1'
+    before_script:
+        - git submodule update --init --recursive
+
+    script:
+        # curl
+        - cd 3d-party/curl
+        - ./buildconf
+        - ./configure --with-ssl=${SSL_PATH}
+        - make
+        - make install
+        - cd ../..
+        
+        # appUpdater
+        - mkdir build
+        - cd build
+        - cmake ../
+        - cd ..
+        - cmake --build build --config Release
+        
         # ctest
         - cd build
         - ctest -j10 -C Release -T test --output-on-failure
         - cd ..
 
+        # prepare artifacts
+        - cp build/src/*appUpdaterShared.* ./
+        - cp build/src/*appUpdaterStatic.* ./
+        - cp src/updater.h ./
+        - cp src/updaterInterface.h ./
+    tags:
+        - macos
+
+
+linux_build_tag:
+    <<: *linux_build_job
+    artifacts:
+        name: linux_release
+        paths:
+            - ./*appUpdaterShared.*
+            - ./*appUpdaterStatic.*
+            - ./updater.h
+            - ./updaterInterface.h
+    only:
+        - tags
+
+linux_build:
+    <<: *linux_build_job
+    artifacts:
+        name: linux_release
+        paths:
+            - ./*appUpdaterShared.*
+            - ./*appUpdaterStatic.*
+            - ./updater.h
+            - ./updaterInterface.h
+        expire_in: 3 day
+    except:
+        - tags
+
+win_build_tags: 
+    <<: *win_build_job
     artifacts:
         name: windows_release
         paths:
-          - ./build/src/Release/*
-          - ./build/src/*.dll
-          - ./src/updater.h
-          - ./src/updaterInterface.h
+            - ./build/src/Release/*
+            - ./build/src/*.dll
+            - ./src/updater.h
+            - ./src/updaterInterface.h
+    only:
+        - tags
+
+win_build:
+    <<: *win_build_job
+    artifacts:
+        name: windows_release
+        paths:
+            - ./build/src/Release/*
+            - ./build/src/*.dll
+            - ./src/updater.h
+            - ./src/updaterInterface.h
         expire_in: 3 day
-    tags:
-      - win
+    except:
+        - tags
 
-macos_build:
-    stage: build
-    variables:
-      SSL_PATH: '/usr/local/opt/openssl@1.1'
-    before_script:
-      - git submodule update --init --recursive
-
-    script:
-      # curl
-      - cd 3d-party/curl
-      - ./buildconf
-      - ./configure --with-ssl=${SSL_PATH}
-      - make
-      - make install
-      - cd ../..
-      
-      # appUpdater
-      - mkdir build
-      - cd build
-      - cmake ../
-      - cd ..
-      - cmake --build build --config Release
-     
-      # ctest
-      - cd build
-      - ctest -j10 -C Release -T test --output-on-failure
-      - cd ..
-
-      # prepare artifacts
-      - cp build/src/*appUpdaterShared.* ./
-      - cp build/src/*appUpdaterStatic.* ./
-      - cp src/updater.h ./
-      - cp src/updaterInterface.h ./
+macos_build_tags:
+    <<: *mac_build_job
     artifacts:
         name: macos_release
         paths:
-          - ./*appUpdaterShared.*
-          - ./*appUpdaterStatic.*
-          - ./updater.h
-          - ./updaterInterface.h
+        - ./*appUpdaterShared.*
+        - ./*appUpdaterStatic.*
+        - ./updater.h
+        - ./updaterInterface.h
+    only:
+        - tags
+
+macos_build:
+    <<: *mac_build_job
+    artifacts:
+        name: macos_release
+        paths:
+        - ./*appUpdaterShared.*
+        - ./*appUpdaterStatic.*
+        - ./updater.h
+        - ./updaterInterface.h
         expire_in: 3 day
-    tags:
-      - macos
-      
+    except:
+        - tags
+
 deploy:
     image: ubuntu:14.04
     variables:
-      LINUX_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=linux_build"
-      WIN_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=win_build"
-      MAC_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=mac_build"
-      RELEASES_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
-      RELEASES_ASSETS_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$CI_COMMIT_TAG/assets/links"
+        LINUX_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=linux_build"
+        WIN_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=win_build"
+        MAC_ARTIFACT_URL: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=mac_build"
+        RELEASES_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
+        RELEASES_ASSETS_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$CI_COMMIT_TAG/assets/links"
     stage: deploy
     only:
-      - tags
+        - tags
     script:
-      - apt-get update
-      - apt-get install -y curl
-      - echo "MAC_ARTIFACT_URL | $WIN_ARTIFACT_URL | LINUX_ARTIFACT_URL | $RELEASES_URL | $RELEASES_ASSETS_URL | $CI_COMMIT_TAG" 
-      - 'curl -X DELETE -H "PRIVATE-TOKEN: $fullAccessToken" -d tag_name=$CI_COMMIT_TAG --url "$RELEASES_URL/$CI_COMMIT_TAG"'    
-      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name=$CI_COMMIT_TAG -d tag_name=$CI_COMMIT_TAG -d description="release" --url "$RELEASES_URL"'
-      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="linux" -d url="$LINUX_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
-      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="windows" -d url="$WIN_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
-      - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="mac" -d url="$MAC_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
+        - apt-get update
+        - apt-get install -y curl
+        - echo "MAC_ARTIFACT_URL | $WIN_ARTIFACT_URL | LINUX_ARTIFACT_URL | $RELEASES_URL | $RELEASES_ASSETS_URL | $CI_COMMIT_TAG" 
+        - 'curl -X DELETE -H "PRIVATE-TOKEN: $fullAccessToken" -d tag_name=$CI_COMMIT_TAG --url "$RELEASES_URL/$CI_COMMIT_TAG"'    
+        - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name=$CI_COMMIT_TAG -d tag_name=$CI_COMMIT_TAG -d description="release" --url "$RELEASES_URL"'
+        - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="linux" -d url="$LINUX_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
+        - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="windows" -d url="$WIN_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
+        - 'curl -X POST -H "PRIVATE-TOKEN: $fullAccessToken" -d name="mac" -d url="$MAC_ARTIFACT_URL" --url "$RELEASES_ASSETS_URL"'
     tags:
-      - linux
+        - linux
