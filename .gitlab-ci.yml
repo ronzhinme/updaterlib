@@ -32,10 +32,16 @@ stages:
         - cd ..
 
         # prepare artifacts
-        - cp build/src/*appUpdaterShared.* ./
-        - cp build/src/*appUpdaterStatic.* ./
-        - cp src/updater.h ./
-        - cp src/updaterInterface.h ./
+        - mkdir appupdater
+        - mkdir appupdater/lib
+        - mkdir appupdater/include
+        - cp build/src/*appUpdaterShared.* ./appupdater/lib
+        - cp build/src/*appUpdaterStatic.* ./appupdater/lib
+        - cp ./src/updaterInterface.h ./appupdater/include
+        - cp ./src/updater.h ./appupdater/include
+        - cp ./src/versionInfo.h ./appupdater/include
+        - cp ./src/curlBridge.h ./appupdater/include
+        - cp ./src/xmlParser.h ./appupdater/include
     tags:
         - linux
 
@@ -61,11 +67,21 @@ stages:
         - cmake ../
         - cd ..
         - cmake --build build --config Release
-    
         # ctest
         - cd build
         - ctest -j10 -C Release -T test --output-on-failure
         - cd ..
+        #prepare build artifacts
+        - mkdir appupdater
+        - mkdir appupdater/lib
+        - mkdir appupdater/include
+        - cp ./build/src/Release/* ./appupdater/lib
+        - cp ./build/src/*.dll ./appupdater/lib
+        - cp ./src/updaterInterface.h ./appupdater/include
+        - cp ./src/updater.h ./appupdater/include
+        - cp ./src/versionInfo.h ./appupdater/include
+        - cp ./src/curlBridge.h ./appupdater/include
+        - cp ./src/xmlParser.h ./appupdater/include
     tags:
     - win
 
@@ -97,11 +113,17 @@ stages:
         - ctest -j10 -C Release -T test --output-on-failure
         - cd ..
 
-        # prepare artifacts
-        - cp build/src/*appUpdaterShared.* ./
-        - cp build/src/*appUpdaterStatic.* ./
-        - cp src/updater.h ./
-        - cp src/updaterInterface.h ./
+        #prepare build artifacts
+        - mkdir appupdater
+        - mkdir appupdater/lib
+        - mkdir appupdater/include
+        - cp build/src/*appUpdaterShared.* ./appupdater/lib
+        - cp build/src/*appUpdaterStatic.* ./appupdater/lib
+        - cp ./src/updaterInterface.h ./appupdater/include
+        - cp ./src/updater.h ./appupdater/include
+        - cp ./src/versionInfo.h ./appupdater/include
+        - cp ./src/curlBridge.h ./appupdater/include
+        - cp ./src/xmlParser.h ./appupdater/include
     tags:
         - macos
 
@@ -109,24 +131,20 @@ stages:
 linux_build_tag:
     <<: *linux_build_job
     artifacts:
-        name: linux_release
+        name: appupdater_linux
         paths:
-            - ./*appUpdaterShared.*
-            - ./*appUpdaterStatic.*
-            - ./updater.h
-            - ./updaterInterface.h
+            - ./appupdater/*
+            - ./3d-party/pugixml/src/*
     only:
         - tags
 
 linux_build:
     <<: *linux_build_job
     artifacts:
-        name: linux_release
+        name: appupdater_linux
         paths:
-            - ./*appUpdaterShared.*
-            - ./*appUpdaterStatic.*
-            - ./updater.h
-            - ./updaterInterface.h
+            - ./appupdater/*
+            - ./3d-party/pugixml/src/*
         expire_in: 3 day
     except:
         - tags
@@ -134,24 +152,20 @@ linux_build:
 win_build_tags: 
     <<: *win_build_job
     artifacts:
-        name: windows_release
+        name: appupdater_win
         paths:
-            - ./build/src/Release/*
-            - ./build/src/*.dll
-            - ./src/updater.h
-            - ./src/updaterInterface.h
+            - ./appupdater/*
+            - ./3d-party/pugixml/src/*
     only:
         - tags
 
 win_build:
     <<: *win_build_job
     artifacts:
-        name: windows_release
+        name: appupdater_win
         paths:
-            - ./build/src/Release/*
-            - ./build/src/*.dll
-            - ./src/updater.h
-            - ./src/updaterInterface.h
+            - ./appupdater/*
+            - ./3d-party/pugixml/src/*
         expire_in: 3 day
     except:
         - tags
@@ -159,24 +173,20 @@ win_build:
 macos_build_tags:
     <<: *mac_build_job
     artifacts:
-        name: macos_release
+        name: appupdater_macos
         paths:
-        - ./*appUpdaterShared.*
-        - ./*appUpdaterStatic.*
-        - ./updater.h
-        - ./updaterInterface.h
+            - ./appupdater/*
+            - ./3d-party/pugixml/src/*
     only:
         - tags
 
 macos_build:
     <<: *mac_build_job
     artifacts:
-        name: macos_release
+        name: appupdater_macos
         paths:
-        - ./*appUpdaterShared.*
-        - ./*appUpdaterStatic.*
-        - ./updater.h
-        - ./updaterInterface.h
+            - ./appupdater/*
+            - ./3d-party/pugixml/src/*
         expire_in: 3 day
     except:
         - tags

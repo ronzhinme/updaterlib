@@ -12,6 +12,25 @@ using namespace std::placeholders;
 
 const std::string UPDATE_FILENAME = "temp.upd.exe";
 
+ExtraInfo::ExtraInfo(const void *val, size_t len) : info(NULL), infoLength(0)
+{
+    if (val == NULL)
+        return;
+
+    infoLength = len;
+    info = new char[infoLength];
+    memcpy(info, val, infoLength);
+}
+
+ExtraInfo::~ExtraInfo() 
+{
+    if(info != NULL)
+    {
+        delete []info;
+        info = NULL;
+    }
+}
+
 Updater::Updater()
     : m_xmlData(""), m_autoUpdateInterval(0), m_channel(""), m_infoUrl("")
 {

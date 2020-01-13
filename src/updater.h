@@ -40,23 +40,8 @@ struct ExtraInfo
     char *info;
     size_t infoLength;
     ExtraInfo() : info(NULL), infoLength(0) {}
-    explicit ExtraInfo(const void *val, size_t len) : info(NULL), infoLength(0)
-    {
-        if (val == NULL)
-            return;
-
-        infoLength = len;
-        info = new char[infoLength];
-        memcpy(info, val, infoLength);
-    }
-    ~ExtraInfo() 
-    {
-        if(info != NULL)
-        {
-            delete []info;
-            info = NULL;
-        }
-    }
+    explicit ExtraInfo(const void *val, size_t len);
+    ~ExtraInfo();
 };
 
 typedef std::function<void(OperationType, Result, const ExtraInfo &)> OperationResultFunction;
