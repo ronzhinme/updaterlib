@@ -1,1 +1,12 @@
-E:\proj\appUpdater\3d-party\curl\winbuild>nmake /f Makefile.vc mode=dll WITH_SSL=dll SSL_PATH="C:/Program Files (x86)/OpenSSL-Win32/"
+# appupdater  
+is a C++ cross-platform library to update desktop software.  
+
+It supported Windows, macOS, Linux. 
+
+It built with some other open source libraries:  
+* [Curl](https://github.com/curl/curl)
+* [pugixml](https://github.com/zeux/pugixml)
+* [OpenSSL](https://github.com/openssl/openssl)
+
+# Example  
+[updateExample](https://gitlab.com/ronme/updateexample)
