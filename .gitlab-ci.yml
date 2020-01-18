@@ -135,6 +135,7 @@ linux_build_tag:
         paths:
             - ./appupdater/*
             - ./3d-party/pugixml/src/*
+        expire_in: 3 month
     only:
         - tags
 
@@ -156,6 +157,7 @@ win_build_tags:
         paths:
             - ./appupdater/*
             - ./3d-party/pugixml/src/*
+        expire_in: 3 month
     only:
         - tags
 
@@ -177,6 +179,7 @@ macos_build_tags:
         paths:
             - ./appupdater/*
             - ./3d-party/pugixml/src/*
+        expire_in: 3 month
     only:
         - tags
 
