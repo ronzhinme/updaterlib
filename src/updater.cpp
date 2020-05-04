@@ -5,12 +5,51 @@
 #include <functional>
 #include <openssl/sha.h>
 #include <memory>
+#include <thread>
 
 #include "updater.h"
 
 using namespace std::placeholders;
 
 const std::string UPDATE_FILENAME = "temp.upd.exe";
+
+void _onResultEvent(Updater *updater, OperationType o, Result r, const ExtraInfo &i)
+{
+    if(updater->operationResult()!=nullptr)
+    {
+        updater->operationResult()(o, r, i);
+    }
+
+    if (!updater->isCheckAndUpdate())
+    {
+        return;
+    }
+
+    if (o == TYPE_DOWNLOAD_INFO && r == RESULT_SUCCESS)
+    {
+        updater->findUpdateVersion();
+    }
+
+    if (o == TYPE_CHECK_UPDATE_VERSION && r == RESULT_SUCCESS)
+    {
+        updater->downloadUpdate();
+    }
+
+    if (o == TYPE_DOWNLOAD_UPDATE && r == RESULT_SUCCESS)
+    {
+        updater->checkUpdateSignature();
+    }
+
+    if (o == TYPE_CHECK_SIGNATURE && r == RESULT_SUCCESS)
+    {
+        updater->runInstaller();
+    }
+
+    if (o == TYPE_RUN_INSTALLER && r == RESULT_SUCCESS)
+    {
+        updater->stopOperation();
+    }
+}
 
 ExtraInfo::ExtraInfo(const void *val, size_t len) : info(NULL), infoLength(0)
 {
@@ -22,17 +61,17 @@ ExtraInfo::ExtraInfo(const void *val, size_t len) : info(NULL), infoLength(0)
     memcpy(info, val, infoLength);
 }
 
-ExtraInfo::~ExtraInfo() 
+ExtraInfo::~ExtraInfo()
 {
-    if(info != NULL)
+    if (info != NULL)
     {
-        delete []info;
+        delete[] info;
         info = NULL;
     }
 }
 
 Updater::Updater()
-    : m_xmlData(""), m_autoUpdateInterval(0), m_channel(""), m_infoUrl("")
+    : m_xmlData(""), m_autoUpdateInterval(0), m_channel(""), m_infoUrl(""), m_currentState(STATE_READY), m_isCheckAndUpdate(false)
 {
     m_xmlParser.reset(new XmlParser());
     m_curlBridge.reset(new CurlBridge());
@@ -86,7 +125,7 @@ void Updater::_appendDataToTempUpdateFile(const void *data, size_t dataSize)
     auto fileSize = ftell(updateFile);
 
     m_downloadProgress.current = fileSize;
-    operationResult()(TYPE_DOWNLOAD_UPDATE, RESULT_INPROGRESS, ExtraInfo(&m_downloadProgress, sizeof(DownloadBytesInfo)));
+    _onResultEvent(this, TYPE_DOWNLOAD_UPDATE, RESULT_INPROGRESS, ExtraInfo(&m_downloadProgress, sizeof(DownloadBytesInfo)));
 }
 
 void Updater::_onDataReceived(OperationType operationType, const char *data, size_t dataSize)
@@ -104,9 +143,10 @@ void Updater::_onDataReceived(OperationType operationType, const char *data, siz
 
 void Updater::downloadInfo()
 {
+    m_currentState = STATE_CHECKING;
     if (m_operationResult != NULL)
     {
-        operationResult()(TYPE_DOWNLOAD_INFO, RESULT_INPROGRESS, ExtraInfo(m_infoUrl.c_str(), m_infoUrl.length()));
+        _onResultEvent(this, TYPE_DOWNLOAD_INFO, RESULT_INPROGRESS, ExtraInfo(m_infoUrl.c_str(), m_infoUrl.length()));
     }
 
     m_xmlData.clear();
@@ -114,7 +154,7 @@ void Updater::downloadInfo()
     m_curlBridge->onDataReceivedFinished([this]() {
         if (m_operationResult != NULL)
         {
-            operationResult()(TYPE_DOWNLOAD_INFO, RESULT_SUCCESS, ExtraInfo());
+            _onResultEvent(this, TYPE_DOWNLOAD_INFO, RESULT_SUCCESS, ExtraInfo());
         }
     });
     m_curlBridge->getUrlData(m_infoUrl);
@@ -126,13 +166,13 @@ void Updater::findUpdateVersion()
 {
     if (m_operationResult != NULL)
     {
-        operationResult()(TYPE_CHECK_UPDATE_VERSION, RESULT_INPROGRESS, ExtraInfo());
+        _onResultEvent(this, TYPE_CHECK_UPDATE_VERSION, RESULT_INPROGRESS, ExtraInfo());
     }
 
     auto res = m_xmlParser->parseXmlData(m_xmlData, m_xmlData.length());
     if (!res && m_operationResult != NULL)
     {
-        operationResult()(TYPE_CHECK_UPDATE_VERSION, RESULT_FAILED, ExtraInfo());
+        _onResultEvent(this, TYPE_CHECK_UPDATE_VERSION, RESULT_FAILED, ExtraInfo());
     }
 
     m_xmlParser->versionInfo = versionInfo;
@@ -140,9 +180,9 @@ void Updater::findUpdateVersion()
     if (m_operationResult != NULL)
     {
         if (res)
-            operationResult()(TYPE_CHECK_UPDATE_VERSION, RESULT_SUCCESS, ExtraInfo());
+            _onResultEvent(this, TYPE_CHECK_UPDATE_VERSION, RESULT_SUCCESS, ExtraInfo());
         else
-            operationResult()(TYPE_CHECK_UPDATE_VERSION, RESULT_FAILED, ExtraInfo());
+            _onResultEvent(this, TYPE_CHECK_UPDATE_VERSION, RESULT_FAILED, ExtraInfo());
     }
 }
 
@@ -153,6 +193,7 @@ std::string Updater::getNextVersionAttribute(const std::string &attribute)
 
 void Updater::downloadUpdate()
 {
+    m_currentState = STATE_DOWNLOADING;
     remove(UPDATE_FILENAME.c_str());
     updateFile = fopen(UPDATE_FILENAME.c_str(), "ab");
 
@@ -162,7 +203,7 @@ void Updater::downloadUpdate()
 
     if (m_operationResult != NULL)
     {
-        operationResult()(TYPE_DOWNLOAD_UPDATE, RESULT_INPROGRESS, ExtraInfo(installerUrl.c_str(), installerUrl.length()));
+        _onResultEvent(this, TYPE_DOWNLOAD_UPDATE, RESULT_INPROGRESS, ExtraInfo(installerUrl.c_str(), installerUrl.length()));
     }
 
     m_curlBridge->onDataReceivedEvent([this, updateSize](const char *d, size_t l) mutable {
@@ -173,7 +214,7 @@ void Updater::downloadUpdate()
         if (m_operationResult != NULL)
         {
             fclose(updateFile);
-            operationResult()(TYPE_DOWNLOAD_UPDATE, RESULT_SUCCESS, ExtraInfo());
+            _onResultEvent(this, TYPE_DOWNLOAD_UPDATE, RESULT_SUCCESS, ExtraInfo());
         }
     });
     m_curlBridge->getUrlData(installerUrl);
@@ -185,13 +226,13 @@ void Updater::checkUpdateSignature()
 {
     if (m_operationResult != NULL)
     {
-        operationResult()(TYPE_CHECK_SIGNATURE, RESULT_INPROGRESS, ExtraInfo());
+        _onResultEvent(this, TYPE_CHECK_SIGNATURE, RESULT_INPROGRESS, ExtraInfo());
     }
 
     auto signatureStr = getNextVersionAttribute("signature");
     if (signatureStr.length() != SHA512_DIGEST_LENGTH * 2)
     {
-        operationResult()(TYPE_CHECK_SIGNATURE, RESULT_FAILED, ExtraInfo());
+        _onResultEvent(this, TYPE_CHECK_SIGNATURE, RESULT_FAILED, ExtraInfo());
     }
 
     printf("signature\n");
@@ -204,7 +245,7 @@ void Updater::checkUpdateSignature()
     unsigned char sha512Signature[SHA512_DIGEST_LENGTH];
     if (m_operationResult != NULL && !_getSHA512FromUpdate(sha512Signature))
     {
-        operationResult()(TYPE_CHECK_SIGNATURE, RESULT_FAILED, ExtraInfo());
+        _onResultEvent(this, TYPE_CHECK_SIGNATURE, RESULT_FAILED, ExtraInfo());
     }
 
     auto result = memcmp(signature, sha512Signature, SHA512_DIGEST_LENGTH);
@@ -212,9 +253,9 @@ void Updater::checkUpdateSignature()
     if (m_operationResult != NULL)
     {
         if (result != 0)
-            operationResult()(TYPE_CHECK_SIGNATURE, RESULT_FAILED, ExtraInfo());
+            _onResultEvent(this, TYPE_CHECK_SIGNATURE, RESULT_FAILED, ExtraInfo());
         else
-            operationResult()(TYPE_CHECK_SIGNATURE, RESULT_SUCCESS, ExtraInfo());
+            _onResultEvent(this, TYPE_CHECK_SIGNATURE, RESULT_SUCCESS, ExtraInfo());
     }
 
     return;
@@ -230,7 +271,7 @@ bool Updater::_getSHA512FromUpdate(unsigned char *sha512Signature)
 
     auto file = fopen(UPDATE_FILENAME.c_str(), "rb");
     unsigned char ch;
-    while (fread(&ch, sizeof(unsigned char), 1, file) > 0 )
+    while (fread(&ch, sizeof(unsigned char), 1, file) > 0)
     {
         if (!SHA512_Update(&context, &ch, sizeof(unsigned char)))
         {
@@ -248,9 +289,10 @@ bool Updater::_getSHA512FromUpdate(unsigned char *sha512Signature)
 
 void Updater::runInstaller()
 {
+    m_currentState = STATE_UPDATING;
     if (m_operationResult != NULL)
     {
-        operationResult()(TYPE_RUN_INSTALLER, RESULT_INPROGRESS, ExtraInfo());
+        _onResultEvent(this, TYPE_RUN_INSTALLER, RESULT_INPROGRESS, ExtraInfo());
     }
 
     auto argStr = getNextVersionAttribute("updateargs");
@@ -258,7 +300,7 @@ void Updater::runInstaller()
 
     if (m_operationResult != NULL)
     {
-        operationResult()(TYPE_RUN_INSTALLER, RESULT_SUCCESS, ExtraInfo());
+        _onResultEvent(this, TYPE_RUN_INSTALLER, RESULT_SUCCESS, ExtraInfo());
     }
 
     return;
@@ -283,4 +325,43 @@ void Updater::_copyData(const Updater &src)
     m_operationResult = src.m_operationResult;
     m_curlBridge = src.m_curlBridge;
     m_xmlParser = src.m_xmlParser;
+    m_currentState = src.m_currentState;
+    m_isCheckAndUpdate = src.m_isCheckAndUpdate;
+}
+
+UpdaterState Updater::getCurrentState()
+{
+    return m_currentState;
+}
+
+void _checkAndUpdateThread(Updater *updater)
+{
+    updater->downloadInfo();
+    while (updater->getCurrentState() != STATE_READY)
+    {
+        std::this_thread::yield();
+    }
+}
+
+void Updater::checkAndUpdate()
+{
+    if (m_currentState != STATE_READY)
+    {
+        return;
+    }
+
+    m_isCheckAndUpdate = true;
+    std::thread checkThread(_checkAndUpdateThread, this);
+    checkThread.join();
+}
+
+void Updater::stopOperation()
+{
+    m_currentState = STATE_READY;
+    m_isCheckAndUpdate = false;
+}
+
+bool Updater::isCheckAndUpdate()
+{
+    return m_isCheckAndUpdate;
 }
