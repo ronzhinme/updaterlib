@@ -27,6 +27,14 @@ enum OperationType
     TYPE_RUN_INSTALLER,
 };
 
+enum UpdaterState
+{
+    STATE_READY,
+    STATE_CHECKING,
+    STATE_DOWNLOADING,
+    STATE_UPDATING,
+};
+
 #pragma pack(push, 1)
 struct DownloadBytesInfo 
 {
@@ -70,8 +78,13 @@ class Updater
     void runInstaller();
     void onOperationResultEvent(OperationResultFunction handler);
     OperationResultFunction operationResult() const;
-
+    void checkAndUpdate();
+    UpdaterState getCurrentState();
+    void stopOperation();
+    bool isCheckAndUpdate();
   private:
+    UpdaterState m_currentState;
+    bool m_isCheckAndUpdate;
     std::string m_infoUrl;
     std::string m_channel;
     std::string m_xmlData;

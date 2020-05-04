@@ -1,4 +1,5 @@
 #include <string.h>
+#include <thread>
 #include "updaterInterface.h"
 
 UPDATER_PTR getUpdaterInstance()
@@ -55,8 +56,8 @@ void getInfoUrl(UPDATER_PTR updater, char *val, size_t len)
 
 void setChannel(UPDATER_PTR updater, const char *val, size_t len)
 {
-    const char* v = val;
-    ((Updater *)updater)->setChannel(std::string(v,len));
+    const char *v = val;
+    ((Updater *)updater)->setChannel(std::string(v, len));
 }
 
 void getChannel(UPDATER_PTR updater, char *val, size_t len)
@@ -96,4 +97,19 @@ void runInstaller(UPDATER_PTR updater)
 void setOperationResultEvent(UPDATER_PTR updater, OperationResultFunction handler)
 {
     ((Updater *)updater)->onOperationResultEvent(handler);
+}
+
+void checkAndUpdate(UPDATER_PTR updater)
+{
+    ((Updater *)updater)->checkAndUpdate();
+}
+
+UpdaterState getCurrentState(UPDATER_PTR updater)
+{
+    return ((Updater *)updater)->getCurrentState();
+}
+
+void stopOperation(UPDATER_PTR updater)
+{
+    ((Updater *)updater)->stopOperation();
 }
