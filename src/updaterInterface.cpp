@@ -113,3 +113,13 @@ void stopOperation(UPDATER_PTR updater)
 {
     ((Updater *)updater)->stopOperation();
 }
+
+void pauseDownloading(UPDATER_PTR updater)
+{
+    ((Updater *)updater)->pauseDownloading();
+}
+
+void resumeDownloading(UPDATER_PTR updater)
+{
+    ((Updater *)updater)->resumeDownloading();
+}

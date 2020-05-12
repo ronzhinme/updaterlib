@@ -33,6 +33,7 @@ enum UpdaterState
     STATE_CHECKING,
     STATE_DOWNLOADING,
     STATE_UPDATING,
+    STATE_PAUSED,
 };
 
 #pragma pack(push, 1)
@@ -82,6 +83,8 @@ class Updater
     UpdaterState getCurrentState();
     void stopOperation();
     bool isCheckAndUpdate();
+    void pauseDownloading();
+    void resumeDownloading();
   private:
     UpdaterState m_currentState;
     bool m_isCheckAndUpdate;
