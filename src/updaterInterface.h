@@ -34,5 +34,7 @@ extern "C"
     DLL_EXPORT void checkAndUpdate(UPDATER_PTR updater);
     DLL_EXPORT UpdaterState getCurrentState(UPDATER_PTR updater);
     DLL_EXPORT void stopOperation(UPDATER_PTR updater);
+    DLL_EXPORT void pauseDownloading(UPDATER_PTR updater);
+    DLL_EXPORT void resumeDownloading(UPDATER_PTR updater);
 }
 #endif // UPDATER_INTERFACE_H

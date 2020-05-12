@@ -365,3 +365,15 @@ bool Updater::isCheckAndUpdate()
 {
     return m_isCheckAndUpdate;
 }
+
+void Updater::pauseDownloading()
+{
+    m_curlBridge->pauseDownloading();
+    m_currentState = STATE_PAUSED;
+}
+
+void Updater::resumeDownloading()
+{
+    m_curlBridge->resumeDownloading();
+    m_currentState = STATE_DOWNLOADING;
+}
