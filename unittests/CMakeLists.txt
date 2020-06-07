@@ -9,7 +9,11 @@ include_directories(${PUGIXML_LIB_PATH}/src)
 
 if (WIN32)
 set(SSL_LIB_PATH $ENV{SSL_PATH})
-set(CURL_PREFIX "builds/libcurl-vc-x86-release-dll-ssl-dll-ipv6-sspi")
+if(CMAKE_SIZEOF_VOID_P EQUAL 8) # 64 bits
+    set(CURL_PREFIX "builds/libcurl-vc-x64-release-dll-ssl-dll-ipv6-sspi")
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4) # 32 bits
+    set(CURL_PREFIX "builds/libcurl-vc-x86-release-dll-ssl-dll-ipv6-sspi")
+endif()
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/lib")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/bin")
 link_directories("${SSL_LIB_PATH}/Lib")
@@ -42,8 +46,15 @@ endif()
 
 if(WIN32)
 configure_file("${CURL_LIB_PATH}/${CURL_PREFIX}/bin/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
-configure_file("${SSL_LIB_PATH}/libcrypto-1_1.dll" ${PROJECT_BINARY_DIR} COPYONLY)
-configure_file("${SSL_LIB_PATH}/libssl-1_1.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        # 64 bits
+        configure_file("${SSL_LIB_PATH}/libcrypto-1_1-x64.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+        configure_file("${SSL_LIB_PATH}/libssl-1_1-x64.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+    elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+        # 32 bits
+        configure_file("${SSL_LIB_PATH}/libcrypto-1_1.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+        configure_file("${SSL_LIB_PATH}/libssl-1_1.dll" ${PROJECT_BINARY_DIR} COPYONLY)
+    endif()
 elseif(APPLE)
 add_library("${CURL_LIB_PATH}/${CURL_PREFIX}/libcurl.4.dylib" SHARED IMPORTED)
 elseif(UNIX)

@@ -47,40 +47,37 @@ stages:
     tags:
         - linux
 
-.win_build_job: &win_build_job
+.win_common_build_job: &win_common_build_job
     stage: build
-    variables:
-        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
     before_script:
         - git submodule update --init --recursive
     script:
         - Set-Content -Path .\win_job_id -Value $env:CI_JOB_ID -NoNewline
 
         # curl
-        - cmd /c 'chcp 866 & 
-                set PATH = %WIN_MSVC_SHELL%;%PATH% &
-                vcvarsall x86 &
+        - cmd /c 'set PATH = %WIN_MSVC_SHELL%;%PATH% &
+                vcvarsall %ARCH% &
                 cd 3d-party/curl &
                 buildconf.bat &
                 cd winbuild & 
                 nmake /f Makefile.vc mode=dll WITH_SSL=dll SSL_PATH="%SSL_PATH%" &
                 cd ../../..'
         # appUpdater
-        - mkdir build
-        - cd build
-        - cmake ../
+        - 'mkdir "$env:BUILD_DIR"'
+        - 'cd "$env:BUILD_DIR"'
+        - 'cmake ../ -G "$env:BUILD_TOOL"'
         - cd ..
-        - cmake --build build --config Release
+        - 'cmake --build "$env:BUILD_DIR" --config Release'
         # ctest
-        - cd build
+        - 'cd "$env:BUILD_DIR"'
         - ctest -j10 -C Release -T test --output-on-failure
         - cd ..
         #prepare build artifacts
         - mkdir appupdater
         - mkdir appupdater/lib
         - mkdir appupdater/include
-        - cp ./build/src/Release/* ./appupdater/lib
-        - cp ./build/src/*.dll ./appupdater/lib
+        - 'cp ./"$env:BUILD_DIR"/src/Release/* ./appupdater/lib'
+        - 'cp ./"$env:BUILD_DIR"/src/*.dll ./appupdater/lib'
         - cp ./src/updaterInterface.h ./appupdater/include
         - cp ./src/updater.h ./appupdater/include
         - cp ./src/versionInfo.h ./appupdater/include
@@ -88,7 +85,7 @@ stages:
         - cp ./src/xmlParser.h ./appupdater/include
     tags:
     - win
-
+    
 .mac_build_job: &mac_build_job
     stage: build
     variables:
@@ -156,10 +153,16 @@ linux_build:
     except:
         - tags
 
-win_build_tags: 
-    <<: *win_build_job
+win32_build_tags: 
+    variables:
+        ARCH: 'x86'
+        BUILD_DIR: 'build_x86'
+        SSL_PATH: 'C:\Program Files (x86)\OpenSSL-Win32'
+        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
+        BUILD_TOOL: 'Visual Studio 15 2017'
+    <<: *win_common_build_job
     artifacts:
-        name: appupdater_win
+        name: appupdater_win32
         paths:
             - ./appupdater/*
             - ./3d-party/pugixml/src/*
@@ -167,10 +170,50 @@ win_build_tags:
     only:
         - tags
 
-win_build:
-    <<: *win_build_job
+win64_build_tags: 
+    variables:
+        ARCH: 'x64'
+        BUILD_DIR: 'build_x64'
+        SSL_PATH: 'C:\Program Files\OpenSSL-Win64'
+        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
+        BUILD_TOOL: 'Visual Studio 15 2017 Win64'
+    <<: *win_common_build_job
     artifacts:
-        name: appupdater_win
+        name: appupdater_win64
+        paths:
+            - ./appupdater/*
+            - ./3d-party/pugixml/src/*
+            - ./win_job_id
+    only:
+        - tags
+
+win32_build_job: 
+    variables:
+        ARCH: 'x86'
+        BUILD_DIR: 'build_x86'
+        SSL_PATH: 'C:\Program Files (x86)\OpenSSL-Win32'
+        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
+        BUILD_TOOL: 'Visual Studio 15 2017'
+    <<: *win_common_build_job
+    artifacts:
+        name: appupdater_win32
+        paths:
+            - ./appupdater/*
+            - ./3d-party/pugixml/src/*
+        expire_in: 3 day
+    except:
+        - tags
+
+win64_build_job: 
+    variables:
+        ARCH: 'x64'
+        BUILD_DIR: 'build_x64'
+        SSL_PATH: 'C:\Program Files\OpenSSL-Win64'
+        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
+        BUILD_TOOL: 'Visual Studio 15 2017 Win64'
+    <<: *win_common_build_job
+    artifacts:
+        name: appupdater_win64
         paths:
             - ./appupdater/*
             - ./3d-party/pugixml/src/*
