@@ -15,7 +15,7 @@ curl -X DELETE -H "PRIVATE-TOKEN: ${token}" -d tag_name=${tagName} --url ${relea
 curl -X POST -H "PRIVATE-TOKEN: ${token}" -d name=${tagName} -d description=${description} -d tag_name=${tagName} --url ${releaseUrl}
 curl -X POST -H "PRIVATE-TOKEN: ${token}" -d name="linux" -d url="${linuxUrl}" --url ${releaseLinks}
 curl -X POST -H "PRIVATE-TOKEN: ${token}" -d name="windows_x32" -d url="${winUrl_x32}" --url ${releaseLinks}
-curl -X POST -H "PRIVATE-TOKEN: ${token}" -d name="windows_64" -d url="${winUrl_x64}" --url ${releaseLinks}
+curl -X POST -H "PRIVATE-TOKEN: ${token}" -d name="windows_x64" -d url="${winUrl_x64}" --url ${releaseLinks}
 curl -X POST -H "PRIVATE-TOKEN: ${token}" -d name="mac" -d url="${macosUrl}" --url ${releaseLinks}
 
 
