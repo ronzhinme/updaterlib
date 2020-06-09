@@ -1,10 +1,11 @@
+googleUrl="https://drive.google.com/uc?export=download%26id="
 token=$1
 tagName=$2
 description=$3
-winUrl_x32=$4
-winUrl_x64=$5
-linuxUrl=$6
-macosUrl=$7
+winUrl_x32=$googleUrl$4
+winUrl_x64=$googleUrl$5
+linuxUrl=$googleUrl$6
+macosUrl=$googleUrl$7
 
 releaseUrl="https://gitlab.com/api/v4/projects/12425924/releases/"
 releaseTagged=${releaseUrl}${tagName}
