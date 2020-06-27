@@ -6,33 +6,21 @@ set(PUGIXML_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/pugixml")
 
 include_directories(${CURL_LIB_PATH}/include)
 include_directories(${PUGIXML_LIB_PATH}/src)
-
-if (WIN32)
-set(SSL_LIB_PATH $ENV{SSL_PATH})
-if(CMAKE_SIZEOF_VOID_P EQUAL 8) # 64 bits
-    set(CURL_PREFIX "builds/libcurl-vc-x64-release-dll-ssl-dll-ipv6-sspi")
-elseif(CMAKE_SIZEOF_VOID_P EQUAL 4) # 32 bits
-    set(CURL_PREFIX "builds/libcurl-vc-x86-release-dll-ssl-dll-ipv6-sspi")
-endif()
-
 include_directories(${SSL_LIB_PATH}/include)
 
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/lib")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/bin")
 link_directories("${SSL_LIB_PATH}/Lib")
 
-elseif(APPLE)
-set(SSL_LIB_PATH $ENV{SSL_PATH})
-set(CURL_PREFIX "lib/.libs")
-
-include_directories(${SSL_LIB_PATH}/include)
-
-link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}")
-link_directories("${SSL_LIB_PATH}/lib")
-
+if (APPLE)
+    set(SSL_LIB_PATH $ENV{SSL_PATH})
+    set(CURL_PREFIX "lib/.libs")
+    include_directories(${SSL_LIB_PATH}/include)
+    link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}")
+    link_directories("${SSL_LIB_PATH}/lib")
 elseif(UNIX)
-set(CURL_PREFIX "lib/.libs")
-link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}")
+    set(CURL_PREFIX "lib/.libs")
+    link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}")
 endif()
 
 configure_file("${PROJECT_SOURCE_DIR}/version_template.h" "${PROJECT_SOURCE_DIR}/version.h")
@@ -49,7 +37,7 @@ add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST} updaterInterface.h updaterI
 set_property(TARGET ${PROJECT_NAME}Shared PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (WIN32)
-target_link_libraries(${PROJECT_NAME}Shared "libcurl.dll" "libcrypto.dll" "libssl.dll")
+target_link_libraries(${PROJECT_NAME}Shared "libcurl" "libcrypto" "libssl")
 configure_file("${CURL_LIB_PATH}/${CURL_PREFIX}/bin/libcurl.dll" ${PROJECT_BINARY_DIR} COPYONLY)
     if(CMAKE_SIZEOF_VOID_P EQUAL 8) # 64 bits
         configure_file("${SSL_LIB_PATH}/libcrypto-1_1-x64.dll" ${PROJECT_BINARY_DIR} COPYONLY)
