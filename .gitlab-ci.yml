@@ -74,10 +74,10 @@ stages:
         - cd ..
         #prepare build artifacts
         - mkdir appupdater
-        - mkdir appupdater/lib
+        - 'mkdir appupdater/lib"_$env:ARCH"'
         - mkdir appupdater/include
-        - 'cp ./"$env:BUILD_DIR"/src/Release/* ./appupdater/lib'
-        - 'cp ./"$env:BUILD_DIR"/src/*.dll ./appupdater/lib'
+        - 'cp ./"$env:BUILD_DIR"/src/Release/* ./appupdater/lib"_$env:ARCH"'
+        - 'cp ./"$env:BUILD_DIR"/src/*.dll ./appupdater/lib"_$env:ARCH"'
         - cp ./src/updaterInterface.h ./appupdater/include
         - cp ./src/updater.h ./appupdater/include
         - cp ./src/versionInfo.h ./appupdater/include
@@ -131,17 +131,6 @@ stages:
         - macos
 
 
-linux_build_tag:
-    <<: *linux_build_job
-    artifacts:
-        name: appupdater_linux
-        paths:
-            - ./appupdater/*
-            - ./3d-party/pugixml/src/*
-            - ./linux_job_id
-    only:
-        - tags
-
 linux_build:
     <<: *linux_build_job
     artifacts:
@@ -149,43 +138,8 @@ linux_build:
         paths:
             - ./appupdater/*
             - ./3d-party/pugixml/src/*
+            - ./linux_job_id
         expire_in: 3 day
-    except:
-        - tags
-
-win32_build_tags: 
-    variables:
-        ARCH: 'x86'
-        BUILD_DIR: 'build_x86'
-        SSL_PATH: 'C:\Program Files (x86)\OpenSSL-Win32'
-        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
-        BUILD_TOOL: 'Visual Studio 15 2017'
-    <<: *win_common_build_job
-    artifacts:
-        name: appupdater_win32
-        paths:
-            - ./appupdater/*
-            - ./3d-party/pugixml/src/*
-            - ./win_job_id
-    only:
-        - tags
-
-win64_build_tags: 
-    variables:
-        ARCH: 'x64'
-        BUILD_DIR: 'build_x64'
-        SSL_PATH: 'C:\Program Files\OpenSSL-Win64'
-        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
-        BUILD_TOOL: 'Visual Studio 15 2017 Win64'
-    <<: *win_common_build_job
-    artifacts:
-        name: appupdater_win64
-        paths:
-            - ./appupdater/*
-            - ./3d-party/pugixml/src/*
-            - ./win_job_id
-    only:
-        - tags
 
 win32_build_job: 
     variables:
@@ -201,8 +155,6 @@ win32_build_job:
             - ./appupdater/*
             - ./3d-party/pugixml/src/*
         expire_in: 3 day
-    except:
-        - tags
 
 win64_build_job: 
     variables:
@@ -218,19 +170,6 @@ win64_build_job:
             - ./appupdater/*
             - ./3d-party/pugixml/src/*
         expire_in: 3 day
-    except:
-        - tags
-
-macos_build_tags:
-    <<: *mac_build_job
-    artifacts:
-        name: appupdater_macos
-        paths:
-            - ./appupdater/*
-            - ./3d-party/pugixml/src/*
-            - ./mac_job_id
-    only:
-        - tags
 
 macos_build:
     <<: *mac_build_job
@@ -240,8 +179,6 @@ macos_build:
             - ./appupdater/*
             - ./3d-party/pugixml/src/*
         expire_in: 3 day
-    except:
-        - tags
 
 deploy:
     image: ubuntu:14.04
