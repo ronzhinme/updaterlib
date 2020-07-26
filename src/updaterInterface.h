@@ -28,6 +28,7 @@ extern "C"
     DLL_EXPORT void setAutoUpdateInterval(UPDATER_PTR updater, size_t hours);
     DLL_EXPORT void downloadInfo(UPDATER_PTR updater);
     DLL_EXPORT void downloadUpdate(UPDATER_PTR updater);
+    DLL_EXPORT void downloadUpdateAsync(UPDATER_PTR updater);
     DLL_EXPORT void checkSignature(UPDATER_PTR updater);
     DLL_EXPORT void runInstaller(UPDATER_PTR updater);
     DLL_EXPORT void setOperationResultEvent(UPDATER_PTR updater, OperationResultFunction handler);
