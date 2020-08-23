@@ -1,6 +1,8 @@
 #include <string.h>
-#include <thread>
+#include <future>
 #include "updaterInterface.h"
+
+std::mutex mutex;
 
 UPDATER_PTR getUpdaterInstance()
 {
@@ -82,6 +84,12 @@ void downloadInfo(UPDATER_PTR updater)
 void downloadUpdate(UPDATER_PTR updater)
 {
     ((Updater *)updater)->downloadUpdate();
+}
+
+void downloadUpdateAsync(UPDATER_PTR updater)
+{
+    std::lock_guard<std::mutex> lk(mutex);
+    auto v = std::async(std::launch::async, &Updater::downloadUpdate, (Updater*)updater);
 }
 
 void checkSignature(UPDATER_PTR updater)
