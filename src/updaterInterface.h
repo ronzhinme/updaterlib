@@ -33,6 +33,7 @@ extern "C"
     DLL_EXPORT void runInstaller(UPDATER_PTR updater);
     DLL_EXPORT void setOperationResultEvent(UPDATER_PTR updater, OperationResultFunction handler);
     DLL_EXPORT void checkAndUpdate(UPDATER_PTR updater);
+    DLL_EXPORT void checkAndUpdateAsync(UPDATER_PTR updater);
     DLL_EXPORT UpdaterState getCurrentState(UPDATER_PTR updater);
     DLL_EXPORT void stopOperation(UPDATER_PTR updater);
     DLL_EXPORT void pauseDownloading(UPDATER_PTR updater);
