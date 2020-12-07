@@ -7,3 +7,13 @@ src/version.h
 .vscode/*
 3d-party/*
 CMakeCache.txt
+/.vs
+/out/build/x64-Debug (default)/.cmake/api/v1
+/out/build/x64-Debug (default)/CMakeFiles
+/out/build/x64-Debug (default)/Testing/Temporary
+*.dll
+*.cmake
+*.ninja
+*.tcl
+*.txt
+/out/build/x64-Debug (default)/unittests

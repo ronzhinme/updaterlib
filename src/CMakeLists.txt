@@ -30,7 +30,8 @@ set(SRC_LIST ${PUGIXML_SRC}
              updater.h updater.cpp 
              versionInfo.h versionInfo.cpp 
              curlBridge.h curlBridge.cpp 
-             xmlParser.h xmlParser.cpp)
+             xmlParser.h xmlParser.cpp 
+             platformSpecific.h platformSpecific.cpp)
 
 add_library(${PROJECT_NAME}Static STATIC ${SRC_LIST})
 add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST} updaterInterface.h updaterInterface.cpp)
