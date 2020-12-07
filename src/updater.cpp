@@ -8,10 +8,9 @@
 #include <thread>
 
 #include "updater.h"
+#include "platformSpecific.h"
 
 using namespace std::placeholders;
-
-const std::string UPDATE_FILENAME = "temp.upd.exe";
 
 void _onResultEvent(Updater *updater, OperationType o, Result r, const ExtraInfo &i)
 {
@@ -172,7 +171,7 @@ void Updater::findUpdateVersion()
     auto res = m_xmlParser->parseXmlData(m_xmlData, m_xmlData.length());
     if (!res && m_operationResult != NULL)
     {
-        _onResultEvent(this, TYPE_CHECK_UPDATE_VERSION, RESULT_FAILED, ExtraInfo());
+        _onResultEvent(this, TYPE_CHECK_UPDATE_VERSION, RESULT_FAILED, ExtraInfo("parseXmlData", 13));
     }
 
     m_xmlParser->versionInfo = versionInfo;
@@ -296,8 +295,7 @@ void Updater::runInstaller()
     }
 
     auto argStr = getNextVersionAttribute("updateargs");
-    system((UPDATE_FILENAME + " " + argStr).c_str());
-
+    PlatformSpecific::runInstaller(UPDATE_FILENAME, argStr);
     if (m_operationResult != NULL)
     {
         _onResultEvent(this, TYPE_RUN_INSTALLER, RESULT_SUCCESS, ExtraInfo());

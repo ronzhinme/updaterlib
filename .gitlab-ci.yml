@@ -44,6 +44,7 @@ stages:
         - cp ./src/versionInfo.h ./appupdater/include
         - cp ./src/curlBridge.h ./appupdater/include
         - cp ./src/xmlParser.h ./appupdater/include
+        - cp ./src/platformSpecific.h ./appupdater/include
     tags:
         - linux
 
@@ -54,9 +55,9 @@ stages:
     script:
         - Set-Content -Path .\win_job_id -Value $env:CI_JOB_ID -NoNewline
 
+        - cmd /c 'set'
         # curl
-        - cmd /c 'set PATH = %WIN_MSVC_SHELL%;%PATH% &
-                vcvarsall %ARCH% &
+        - cmd /c 'vcvarsall.bat %ARCH% &
                 cd 3d-party/curl &
                 buildconf.bat &
                 cd winbuild & 
@@ -83,6 +84,7 @@ stages:
         - cp ./src/versionInfo.h ./appupdater/include
         - cp ./src/curlBridge.h ./appupdater/include
         - cp ./src/xmlParser.h ./appupdater/include
+        - cp ./src/platformSpecific.h ./appupdater/include
     tags:
     - win
     
@@ -127,6 +129,7 @@ stages:
         - cp ./src/versionInfo.h ./appupdater/include
         - cp ./src/curlBridge.h ./appupdater/include
         - cp ./src/xmlParser.h ./appupdater/include
+        - cp ./src/platformSpecific.h ./appupdater/include
     tags:
         - macos
 
@@ -146,7 +149,6 @@ win32_build_job:
         ARCH: 'x86'
         BUILD_DIR: 'build_x86'
         SSL_PATH: 'C:\Program Files (x86)\OpenSSL-Win32'
-        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
         BUILD_TOOL: 'Visual Studio 15 2017'
     <<: *win_common_build_job
     artifacts:
@@ -161,7 +163,6 @@ win64_build_job:
         ARCH: 'x64'
         BUILD_DIR: 'build_x64'
         SSL_PATH: 'C:\Program Files\OpenSSL-Win64'
-        WIN_MSVC_SHELL: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'
         BUILD_TOOL: 'Visual Studio 15 2017 Win64'
     <<: *win_common_build_job
     artifacts:
