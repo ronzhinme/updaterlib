@@ -148,7 +148,7 @@ win32_build_job:
     variables:
         ARCH: 'x86'
         BUILD_DIR: 'build_x86'
-        SSL_PATH: 'C:\Program Files (x86)\OpenSSL-Win32'
+        SSL_PATH: 'E:\Program Files (x86)\OpenSSL-Win32'
         BUILD_TOOL: 'Visual Studio 16 2019'
     <<: *win_common_build_job
     artifacts:
@@ -162,7 +162,7 @@ win64_build_job:
     variables:
         ARCH: 'x64'
         BUILD_DIR: 'build_x64'
-        SSL_PATH: 'C:\Program Files\OpenSSL-Win64'
+        SSL_PATH: 'E:\Program Files\OpenSSL-Win64'
         BUILD_TOOL: 'Visual Studio 16 2019 Win64'
     <<: *win_common_build_job
     artifacts:
