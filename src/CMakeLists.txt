@@ -6,11 +6,11 @@ set(PUGIXML_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/pugixml")
 
 include_directories(${CURL_LIB_PATH}/include)
 include_directories(${PUGIXML_LIB_PATH}/src)
-include_directories($ENV{SSL_LIB_PATH}/include)
+include_directories(${SSL_LIB_PATH}/include)
 
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/lib")
 link_directories("${CURL_LIB_PATH}/${CURL_PREFIX}/bin")
-link_directories("$ENV{SSL_LIB_PATH}/Lib")
+link_directories("${SSL_LIB_PATH}/Lib")
 
 if (APPLE)
     set(SSL_LIB_PATH $ENV{SSL_PATH})
