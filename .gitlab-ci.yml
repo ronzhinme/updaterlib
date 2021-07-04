@@ -165,7 +165,7 @@ win64_build_job:
         BUILD_DIR: 'build_x64'
         SSL_PATH: 'E:\Program Files\OpenSSL-Win64'
         BUILD_TOOL: 'Visual Studio 16 2019'
-        PLATFORM: 'AMD64'
+        PLATFORM: 'x64'
     <<: *win_common_build_job
     artifacts:
         name: appupdater_win64
