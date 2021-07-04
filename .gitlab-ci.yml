@@ -66,7 +66,7 @@ stages:
         # appUpdater
         - 'mkdir "$env:BUILD_DIR"'
         - 'cd "$env:BUILD_DIR"'
-        - 'cmake ../ -G "$env:BUILD_TOOL"'
+        - 'cmake ../ -G "$env:BUILD_TOOL" -A $env:PLATFORM'
         - cd ..
         - 'cmake --build "$env:BUILD_DIR" --config Release'
         # ctest
@@ -150,6 +150,7 @@ win32_build_job:
         BUILD_DIR: 'build_x86'
         SSL_PATH: 'E:\Program Files (x86)\OpenSSL-Win32'
         BUILD_TOOL: 'Visual Studio 16 2019'
+        PLATFORM: 'Win32'
     <<: *win_common_build_job
     artifacts:
         name: appupdater_win32
@@ -163,7 +164,8 @@ win64_build_job:
         ARCH: 'x64'
         BUILD_DIR: 'build_x64'
         SSL_PATH: 'E:\Program Files\OpenSSL-Win64'
-        BUILD_TOOL: 'Visual Studio 16 2019 Win64'
+        BUILD_TOOL: 'Visual Studio 16 2019'
+        PLATFORM: 'Win64'
     <<: *win_common_build_job
     artifacts:
         name: appupdater_win64
