@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
 project(curlCheck)
 
 set(CURL_LIB_PATH "${PROJECT_SOURCE_DIR}/../3d-party/curl")
