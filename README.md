@@ -1,5 +1,5 @@
 # appupdater  
-is a C++ cross-platform library to update desktop software.  
+is a C++ cross-platform framework to update desktop software.  
 
 It supports: 
 - `Windows`  
