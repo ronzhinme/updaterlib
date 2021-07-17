@@ -34,5 +34,46 @@ macOS
 [Windows](https://gitlab.com/desktopsoftwareupdater/updaterlib/-/blob/master/.gitlab-ci.yml#L67)  
 [macOS](https://gitlab.com/desktopsoftwareupdater/updaterlib/-/blob/master/.gitlab-ci.yml#L110)  
 
+# Using
+1. use header 
+```
+#include <updaterInterface.h>
+```
+
+1. link library 
+```
+appUpdaterShared
+```
+
+1. get the updater instance 
+```
+auto updater = getUpdaterInstance();
+```
+
+1. set the current version info 
+```
+//current version
+std::string version("0.0.0.1");
+setCurrentVersion(updater, version.c_str(), version.length());
+
+//url where the fileInfo is placed
+const std::string infoUrl("https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/raw/master/appUpdateSample_Win.xml");
+setInfoUrl(updater, infoUrl.c_str(), infoUrl.length());
+
+//channel ("alpha", "beta", "rc", "stable", or any other string to identify particular version)
+setChannel(updater, "alpha", 5);
+```
+
+1. check and update for a new version in one command
+```
+checkAndUpdate(updater);
+```
+
+You may find more details in other examples.
+
 # Examples  
-[updateExample](https://gitlab.com/desktopsoftwareupdater/updaterexamples)
+[updateExample all projects](https://gitlab.com/desktopsoftwareupdater/updaterexamples)
+[example with separate commands](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/main.cpp)
+[example with all-in-one commnad](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/allInOne.cpp)
+[example with downloading pause](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/pause_resume.cpp)
+[QML exmple](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/tree/master/qml_example)
