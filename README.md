@@ -76,4 +76,4 @@ You may find more details in other examples.
 [example with separate commands](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/main.cpp)  
 [example with all-in-one commnad](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/allInOne.cpp)  
 [example with downloading pause](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/pause_resume.cpp)  
-[QML exmple](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/tree/master/qml_example)  
+[QML example](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/tree/master/qml_example)  
