@@ -72,8 +72,8 @@ checkAndUpdate(updater);
 You may find more details in other examples.
 
 # Examples  
-[updateExample all projects](https://gitlab.com/desktopsoftwareupdater/updaterexamples)
-[example with separate commands](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/main.cpp)
-[example with all-in-one commnad](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/allInOne.cpp)
-[example with downloading pause](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/pause_resume.cpp)
-[QML exmple](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/tree/master/qml_example)
+[updateExample all projects](https://gitlab.com/desktopsoftwareupdater/updaterexamples)  
+[example with separate commands](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/main.cpp)  
+[example with all-in-one commnad](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/allInOne.cpp)  
+[example with downloading pause](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/pause_resume.cpp)  
+[QML exmple](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/tree/master/qml_example)  
