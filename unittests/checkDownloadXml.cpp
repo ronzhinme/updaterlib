@@ -5,14 +5,16 @@
 #include <windows.h>
 #endif
 
+#include <iostream>
+
 int main()
 {
-    const std::string fData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\
-<note>\r\n\
-  <to>Tove</to>\r\n\
-  <from>Jani</from>\r\n\
-  <heading>Reminder</heading>\r\n\
-  <body>Don't forget me this weekend!</body>\r\n\
+    const std::string fData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<note>\n\
+  <to>Tove</to>\n\
+  <from>Jani</from>\n\
+  <heading>Reminder</heading>\n\
+  <body>Don't forget me this weekend!</body>\n\
 </note>";
     
     CurlBridge curlBridge;
@@ -22,6 +24,8 @@ int main()
     
     bool result = false; 
     curlBridge.onDataReceivedFinished([&result, &fData, &urlData]() mutable {
+
+        std::cout << urlData.c_str() << std::endl << fData.c_str() << std::endl << fData.compare(urlData.c_str()) <<std::endl;
         result = fData.compare(urlData.c_str())==0;
     });
     
