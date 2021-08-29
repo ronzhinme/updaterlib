@@ -1,4 +1,5 @@
 #if defined(_WIN32)
+#include <windows.h>
 #elif defined(__APPLE__)
 #include <chrono>
 #include <stdio.h>
@@ -10,7 +11,22 @@
 #if defined(_WIN32)
 void runInstallerWindows(const std::string& filename, const std::string& argString)
 {
-    system((filename + " " + argString).c_str());
+    //system((filename + " " + argString).c_str());
+    bool isNeedElevation = false;
+    
+    SHELLEXECUTEINFO ShExecInfo = { 0 };
+	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	ShExecInfo.hwnd = NULL;
+	ShExecInfo.lpVerb = isNeedElevation ? TEXT("runas") : TEXT("open");
+	ShExecInfo.lpFile = filename.c_str();
+	ShExecInfo.lpParameters = argString.c_str();
+	ShExecInfo.lpDirectory = NULL;
+	ShExecInfo.nShow = SW_SHOWNORMAL;
+	ShExecInfo.hInstApp = NULL;
+	
+	ShellExecuteEx(&ShExecInfo);
+	WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
 }
 
 #elif defined(__APPLE__)
