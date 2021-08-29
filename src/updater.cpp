@@ -153,7 +153,7 @@ void Updater::downloadInfo()
     m_curlBridge->onDataReceivedFinished([this]() {
         if (m_operationResult != NULL)
         {
-            _onResultEvent(this, TYPE_DOWNLOAD_INFO, RESULT_SUCCESS, ExtraInfo());
+            _onResultEvent(this, TYPE_DOWNLOAD_INFO, RESULT_SUCCESS, ExtraInfo(m_xmlData.c_str(), m_xmlData.length()));
         }
     });
     m_curlBridge->getUrlData(m_infoUrl);
