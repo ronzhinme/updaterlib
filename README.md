@@ -37,15 +37,15 @@ is a C++ cross-platform framework to update desktop software.
 ```
 [XML example](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/appUpdateSample_Win.xml)
 
-It supports: 
+# It supports: 
 - `Windows`  
 - `macOS`  
 - `Linux`   
 
 It built with some other open source libraries:  
-* [Curl](https://github.com/curl/curl)
+* [curl](https://github.com/curl/curl)
 * [pugixml](https://github.com/zeux/pugixml)
-* [OpenSSL](https://github.com/openssl/openssl)
+* [openssl](https://github.com/openssl/openssl)
 
 # Prerequisites  
 ### Linux  
