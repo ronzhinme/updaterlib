@@ -1,6 +1,42 @@
 # appupdater  
 is a C++ cross-platform framework to update desktop software.  
 
+# How it works
+1. Framework checks the URL you specified for info about versions and download it. 
+   This URL is called InfoUrl in the framework.
+   Info about versions is presented as a simple XML file
+1. Framework parse versions info XML file and try to find the next version for the application.
+1. If there is a new version of the application is available in the version info XML file then the framework will download the data from the URL specified in XML for that version.
+1. After the downloading is completed then the framework will check the SHA-512 signature of data.
+1. Framework will make execute installer operation for Windows with specified arguments in XML.
+1. Framework will make execute installer operation for Linux with specified arguments in XML.
+1. Framework will make install DMG operation for macOS.
+
+# Version Info file structure
+```
+<updateInfo>
+<channel type="alpha">
+<version id="0.0.0.1" unixtime="0" size="1023" active="true" critical="false" url="" notes="First version" signature=""></version>
+<version id="0.0.1.1" unixtime="1095292800" size="1023" active="false" critical="true" url="" notes="" signature=""></version>
+<version id="0.0.1.1" unixtime="1095292801" size="1023" active="true" critical="false" url="" notes="Active critical version \nInstall It \nAny String" signature=""></version>
+<version 
+         id="0.1.1.1"          // id        - [required] main info about version     
+         unixtime="1095292802" // unixtime  - [optional] helps to decide which version newer if ids equals
+         size="29696808"       // size      - [optional] helps to show correct downloading progress
+         active="true"         // active    - [required] enabled/disabled version to update
+         critical="false"      // critical  - [required] if critical is true then this version will downloaded even there is newer version exists
+         url="https://..."     // url       - [required] url where the installer is placed
+         notes=""              // notes     - [optional] just notes. Not used in framework yet
+         signature="...."      // signature - [required] SHA-512 hash of installer
+         updateargs=""         // updateargs- [optional] extra options when installer started
+        ></version>
+</channel>
+<channel type="beta"></channel>
+<channel type="test"></channel>
+</updateInfo>
+```
+[XML example](https://gitlab.com/desktopsoftwareupdater/updaterexamples/-/blob/master/appUpdateSample_Win.xml)
+
 It supports: 
 - `Windows`  
 - `macOS`  
