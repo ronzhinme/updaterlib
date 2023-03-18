@@ -56,8 +56,12 @@ apt-get install -y git cmake build-essential autoconf libtool pkg-config libssl-
 ### Windows  
 ### macOS  
 1. install Xcode with git. Just try `git` it will install Xcode with git if need.
-1. install brew `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
-1. `brew install autoconf automake libtool openssl cmake`
+2. install brew `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+3. `brew install autoconf automake libtool openssl cmake`
+4. softwareupdate --all --install --force
+5. If that doesn't show you any updates, run:
+   1. sudo rm -rf /Library/Developer/CommandLineTools
+   2. sudo xcode-select --install
 
 # Build
 1. build the `curl` library  
