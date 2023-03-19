@@ -1,0 +1,9 @@
+[requires]
+zlib/1.2.13
+openssl/1.1.1t
+libcurl/7.88.1
+pugixml/1.13
+
+[generators]
+CMakeDeps
+CMakeToolchain
