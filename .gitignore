@@ -16,4 +16,18 @@ CMakeCache.txt
 *.ninja
 *.tcl
 *.txt
+*.sln
+*.vcproj
+*.vcxproj
+*.bat
+*.filters
+*.obj
+*.tlog
+*.stamp
+*.recipe
+*.log
+*.json
+*.depend
+*.exp
+*.lib
 /out/build/x64-Debug (default)/unittests
