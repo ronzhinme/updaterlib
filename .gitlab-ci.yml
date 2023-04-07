@@ -1,28 +1,22 @@
 stages:
-    - test
     - build
     - deploy
 
 .linux_build_job: &linux_build_job
     stage: build
-    image: ubuntu:14.04
     before_script:
-        - apt-get update
-        - apt-get install -y git cmake build-essential autoconf libtool pkg-config libssl-dev
+        - sudo apt-get update
+        - sudo apt-get install -y git cmake build-essential autoconf libtool pkg-config libssl-dev python3-pip
         - git submodule update --init --recursive
     script:
         - echo $CI_JOB_ID > linux_job_id
+        - python3 -m pip install -U conan
+        - conan profile detect --force
+        - conan install . --output-folder=build --build=missing
+        - cmake --preset conan-release  
 
-        # curl
-        - cd 3d-party/curl
-        - ./buildconf
-        - ./configure
-        - make
-        - make install
-        - cd ../..
-    
         # appUpdater
-        - mkdir build
+        - mkdir -p build
         - cd build
         - cmake ../
         - cd ..
@@ -34,9 +28,9 @@ stages:
         - cd ..
 
         # prepare artifacts
-        - mkdir appupdater
-        - mkdir appupdater/lib
-        - mkdir appupdater/include
+        - mkdir -p appupdater
+        - mkdir -p appupdater/lib
+        - mkdir -p appupdater/include
         - cp build/src/*appUpdaterShared.* ./appupdater/lib
         - cp build/src/*appUpdaterStatic.* ./appupdater/lib
         - cp ./src/updaterInterface.h ./appupdater/include
@@ -50,33 +44,26 @@ stages:
 
 .win_common_build_job: &win_common_build_job
     stage: build
-    before_script:
-        - git submodule update --init --recursive
     script:
         - Set-Content -Path .\win_job_id -Value $env:CI_JOB_ID -NoNewline
+        - conan install . --output-folder=$env:BUILD_DIR --build=missing
+        - cmake --preset conan-default  
 
-        - cmd /c 'set'
-        # curl
-        - cmd /c 'vcvarsall.bat %ARCH% &
-                cd 3d-party/curl &
-                buildconf.bat &
-                cd winbuild & 
-                nmake /f Makefile.vc mode=dll WITH_SSL=dll SSL_PATH="%SSL_PATH%" &
-                cd ../../..'
         # appUpdater
-        - 'mkdir "$env:BUILD_DIR"'
         - 'cd "$env:BUILD_DIR"'
-        - 'cmake ../ -G "$env:BUILD_TOOL" -A $env:PLATFORM'
+        - 'cmake ../ -A $env:PLATFORM'
         - cd ..
         - 'cmake --build "$env:BUILD_DIR" --config Release'
+
         # ctest
-        - 'cd "$env:BUILD_DIR"'
+        - 'cd "$env:BUILD_DIR'
         - ctest -j10 -C Release -T test --output-on-failure
         - cd ..
+
         #prepare build artifacts
-        - mkdir appupdater
-        - 'mkdir appupdater/lib"_$env:ARCH"'
-        - mkdir appupdater/include
+        - mkdir appupdater -ea Ignore
+        - 'mkdir appupdater/lib"_$env:ARCH" -ea Ignore'
+        - mkdir appupdater/include -ea Ignore
         - 'cp ./"$env:BUILD_DIR"/src/Release/* ./appupdater/lib"_$env:ARCH"'
         - 'cp ./"$env:BUILD_DIR"/src/*.dll ./appupdater/lib"_$env:ARCH"'
         - cp ./src/updaterInterface.h ./appupdater/include
@@ -90,24 +77,14 @@ stages:
     
 .mac_build_job: &mac_build_job
     stage: build
-    variables:
-        SSL_PATH: '/usr/local/opt/openssl@1.1'
-    before_script:
-        - git submodule update --init --recursive
-
     script:
         - echo $CI_JOB_ID > mac_job_id
+        - conan profile detect --force
+        - conan install . --output-folder=build --build=missing
+        - cmake --preset conan-release  
 
-        # curl
-        - cd 3d-party/curl
-        - ./buildconf
-        - ./configure --with-ssl=${SSL_PATH}
-        - make
-        - make install
-        - cd ../..
-        
         # appUpdater
-        - mkdir build
+        - mkdir -p build
         - cd build
         - cmake ../
         - cd ..
@@ -140,38 +117,19 @@ linux_build:
         name: appupdater_linux
         paths:
             - ./appupdater/*
-            - ./3d-party/pugixml/src/*
             - ./linux_job_id
         expire_in: 3 day
 
-win32_build_job: 
-    variables:
-        ARCH: 'x86'
-        BUILD_DIR: 'build_x86'
-        SSL_PATH: 'E:\Program Files (x86)\OpenSSL-Win32'
-        BUILD_TOOL: 'Visual Studio 16 2019'
-        PLATFORM: 'Win32'
-    <<: *win_common_build_job
-    artifacts:
-        name: appupdater_win32
-        paths:
-            - ./appupdater/*
-            - ./3d-party/pugixml/src/*
-        expire_in: 3 day
-
-win64_build_job: 
+win64_build: 
     variables:
         ARCH: 'x64'
         BUILD_DIR: 'build_x64'
-        SSL_PATH: 'E:\Program Files\OpenSSL-Win64'
-        BUILD_TOOL: 'Visual Studio 16 2019'
         PLATFORM: 'x64'
     <<: *win_common_build_job
     artifacts:
         name: appupdater_win64
         paths:
             - ./appupdater/*
-            - ./3d-party/pugixml/src/*
         expire_in: 3 day
 
 macos_build:
@@ -180,7 +138,6 @@ macos_build:
         name: appupdater_macos
         paths:
             - ./appupdater/*
-            - ./3d-party/pugixml/src/*
         expire_in: 3 day
 
 deploy:

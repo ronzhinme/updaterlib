@@ -50,9 +50,9 @@ void _onResultEvent(Updater *updater, OperationType o, Result r, const ExtraInfo
     }
 }
 
-ExtraInfo::ExtraInfo(const void *val, size_t len) : info(NULL), infoLength(0)
+ExtraInfo::ExtraInfo(const void *val, size_t len) : info(nullptr), infoLength(0)
 {
-    if (val == NULL)
+    if (val == nullptr)
         return;
 
     infoLength = len;
@@ -62,10 +62,10 @@ ExtraInfo::ExtraInfo(const void *val, size_t len) : info(NULL), infoLength(0)
 
 ExtraInfo::~ExtraInfo()
 {
-    if (info != NULL)
+    if (info != nullptr)
     {
         delete[] info;
-        info = NULL;
+        info = nullptr;
     }
 }
 
@@ -143,7 +143,7 @@ void Updater::_onDataReceived(OperationType operationType, const char *data, siz
 void Updater::downloadInfo()
 {
     m_currentState = STATE_CHECKING;
-    if (m_operationResult != NULL)
+    if (m_operationResult != nullptr)
     {
         _onResultEvent(this, TYPE_DOWNLOAD_INFO, RESULT_INPROGRESS, ExtraInfo(m_infoUrl.c_str(), m_infoUrl.length()));
     }
@@ -151,7 +151,7 @@ void Updater::downloadInfo()
     m_xmlData.clear();
     m_curlBridge->onDataReceivedEvent([this](const char *d, size_t l) mutable { this->_onDataReceived(TYPE_DOWNLOAD_INFO, d, l); });
     m_curlBridge->onDataReceivedFinished([this]() {
-        if (m_operationResult != NULL)
+        if (m_operationResult != nullptr)
         {
             _onResultEvent(this, TYPE_DOWNLOAD_INFO, RESULT_SUCCESS, ExtraInfo(m_xmlData.c_str(), m_xmlData.length()));
         }
@@ -163,20 +163,20 @@ void Updater::downloadInfo()
 
 void Updater::findUpdateVersion()
 {
-    if (m_operationResult != NULL)
+    if (m_operationResult != nullptr)
     {
         _onResultEvent(this, TYPE_CHECK_UPDATE_VERSION, RESULT_INPROGRESS, ExtraInfo());
     }
 
     auto res = m_xmlParser->parseXmlData(m_xmlData, m_xmlData.length());
-    if (!res && m_operationResult != NULL)
+    if (!res && m_operationResult != nullptr)
     {
         _onResultEvent(this, TYPE_CHECK_UPDATE_VERSION, RESULT_FAILED, ExtraInfo("parseXmlData", 13));
     }
 
     m_xmlParser->versionInfo = versionInfo;
     res = m_xmlParser->getUpdateVersion(m_channel);
-    if (m_operationResult != NULL)
+    if (m_operationResult != nullptr)
     {
         if (res)
             _onResultEvent(this, TYPE_CHECK_UPDATE_VERSION, RESULT_SUCCESS, ExtraInfo());
@@ -200,7 +200,7 @@ void Updater::downloadUpdate()
     auto updateSize = getNextVersionAttribute("size");
     m_downloadProgress.total = std::stoull(updateSize);
 
-    if (m_operationResult != NULL)
+    if (m_operationResult != nullptr)
     {
         _onResultEvent(this, TYPE_DOWNLOAD_UPDATE, RESULT_INPROGRESS, ExtraInfo(installerUrl.c_str(), installerUrl.length()));
     }
@@ -210,7 +210,7 @@ void Updater::downloadUpdate()
     });
 
     m_curlBridge->onDataReceivedFinished([this]() {
-        if (m_operationResult != NULL)
+        if (m_operationResult != nullptr)
         {
             fclose(updateFile);
             _onResultEvent(this, TYPE_DOWNLOAD_UPDATE, RESULT_SUCCESS, ExtraInfo());
@@ -223,7 +223,7 @@ void Updater::downloadUpdate()
 
 void Updater::checkUpdateSignature()
 {
-    if (m_operationResult != NULL)
+    if (m_operationResult != nullptr)
     {
         _onResultEvent(this, TYPE_CHECK_SIGNATURE, RESULT_INPROGRESS, ExtraInfo());
     }
@@ -242,14 +242,14 @@ void Updater::checkUpdateSignature()
     }
 
     unsigned char sha512Signature[SHA512_DIGEST_LENGTH];
-    if (m_operationResult != NULL && !_getSHA512FromUpdate(sha512Signature))
+    if (m_operationResult != nullptr && !_getSHA512FromUpdate(sha512Signature))
     {
         _onResultEvent(this, TYPE_CHECK_SIGNATURE, RESULT_FAILED, ExtraInfo());
     }
 
     auto result = memcmp(signature, sha512Signature, SHA512_DIGEST_LENGTH);
 
-    if (m_operationResult != NULL)
+    if (m_operationResult != nullptr)
     {
         if (result != 0)
             _onResultEvent(this, TYPE_CHECK_SIGNATURE, RESULT_FAILED, ExtraInfo());
@@ -289,14 +289,14 @@ bool Updater::_getSHA512FromUpdate(unsigned char *sha512Signature)
 void Updater::runInstaller()
 {
     m_currentState = STATE_UPDATING;
-    if (m_operationResult != NULL)
+    if (m_operationResult != nullptr)
     {
         _onResultEvent(this, TYPE_RUN_INSTALLER, RESULT_INPROGRESS, ExtraInfo());
     }
 
     auto argStr = getNextVersionAttribute("updateargs");
     PlatformSpecific::runInstaller(UPDATE_FILENAME, argStr);
-    if (m_operationResult != NULL)
+    if (m_operationResult != nullptr)
     {
         _onResultEvent(this, TYPE_RUN_INSTALLER, RESULT_SUCCESS, ExtraInfo());
     }

@@ -21,3 +21,4 @@ add_library(${PROJECT_NAME}Shared SHARED ${SRC_LIST} updaterInterface.h updaterI
 
 set_property(TARGET ${PROJECT_NAME}Shared PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(${PROJECT_NAME}Shared pugixml::pugixml CURL::libcurl OpenSSL::Crypto OpenSSL::SSL)
+target_link_libraries(${PROJECT_NAME}Static pugixml::pugixml CURL::libcurl OpenSSL::Crypto OpenSSL::SSL)

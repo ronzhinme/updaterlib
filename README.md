@@ -49,15 +49,19 @@ It built with some other open source libraries:
 
 # Prerequisites  
 ### Linux  
-https://gitlab.com/desktopsoftwareupdater/updaterlib/-/blob/master/.gitlab-ci.yml#L11
+https://gitlab.com/desktopsoftwareupdater/updaterlib/-/blob/master/.gitlab-ci.yml#L6
 ```
-apt-get install -y git cmake build-essential autoconf libtool pkg-config libssl-dev
+apt-get install -y git cmake build-essential autoconf libtool pkg-config libssl-dev python-pip
 ```
 ### Windows  
+1. install [MS Visual Studio](https://visualstudio.microsoft.com/downloads/)
+2. install [conan](https://docs.conan.io/2/installation.html#use-a-system-installer-or-create-a-self-contained-executable)
+3. install [cmake](https://cmake.org/download/)
+   
 ### macOS  
 1. install Xcode with git. Just try `git` it will install Xcode with git if need.
 2. install brew `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
-3. `brew install autoconf automake libtool openssl cmake`
+3. `brew install openssl cmake conan`
 4. softwareupdate --all --install --force
 5. If that doesn't show you any updates, run:
    1. sudo rm -rf /Library/Developer/CommandLineTools
