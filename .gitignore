@@ -30,4 +30,6 @@ CMakeCache.txt
 *.depend
 *.exp
 *.lib
+*.exe
 /out/build/x64-Debug (default)/unittests
+/Testing/*

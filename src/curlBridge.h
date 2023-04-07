@@ -23,10 +23,9 @@ public:
   DataReceivedFinisedFunction onDataReceivedFinished() const;
 
 private:
-  DataReceivedFunction m_onDataReceived = NULL;
-  DataReceivedFinisedFunction m_onDataFinished = NULL;
-  void * m_curl = NULL;
-  
+  DataReceivedFunction m_onDataReceived = nullptr;
+  DataReceivedFinisedFunction m_onDataFinished = nullptr;
+  void * m_curl = nullptr;
 };
 
 #endif
