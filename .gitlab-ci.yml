@@ -1,6 +1,7 @@
 stages:
     - build
     - deploy
+    - test
 
 .linux_build_job: &linux_build_job
     stage: build
@@ -22,11 +23,6 @@ stages:
         - cd ..
         - cmake --build build --config Release
         
-        # ctest
-        - cd build
-        - ctest -j10 -C Release -T test --output-on-failure
-        - cd ..
-
         # prepare artifacts
         - mkdir -p appupdater
         - mkdir -p appupdater/lib
@@ -42,30 +38,25 @@ stages:
     tags:
         - linux
 
-.win_common_build_job: &win_common_build_job
+.win_build_job: &win_build_job
     stage: build
     script:
-        - Set-Content -Path .\win_job_id -Value $env:CI_JOB_ID -NoNewline
-        - conan install . --output-folder=$env:BUILD_DIR --build=missing
+        - Set-Content -Path win_job_id -Value $env:CI_JOB_ID -NoNewline
+        - conan install . --output-folder=build --build=missing
         - cmake --preset conan-default  
 
         # appUpdater
-        - 'cd "$env:BUILD_DIR"'
-        - 'cmake ../ -A $env:PLATFORM'
+        - cd build
+        - cmake ../
         - cd ..
-        - 'cmake --build "$env:BUILD_DIR" --config Release'
-
-        # ctest
-        - 'cd "$env:BUILD_DIR'
-        - ctest -j10 -C Release -T test --output-on-failure
-        - cd ..
+        - cmake --build build --config Release
 
         #prepare build artifacts
         - mkdir appupdater -ea Ignore
-        - 'mkdir appupdater/lib"_$env:ARCH" -ea Ignore'
+        - mkdir appupdater/lib -ea Ignore
         - mkdir appupdater/include -ea Ignore
-        - 'cp ./"$env:BUILD_DIR"/src/Release/* ./appupdater/lib"_$env:ARCH"'
-        - 'cp ./"$env:BUILD_DIR"/src/*.dll ./appupdater/lib"_$env:ARCH"'
+        - cp ./build/src/Release/* ./appupdater/lib
+        - cp ./build/src/*.dll ./appupdater/lib
         - cp ./src/updaterInterface.h ./appupdater/include
         - cp ./src/updater.h ./appupdater/include
         - cp ./src/versionInfo.h ./appupdater/include
@@ -73,7 +64,7 @@ stages:
         - cp ./src/xmlParser.h ./appupdater/include
         - cp ./src/platformSpecific.h ./appupdater/include
     tags:
-    - win
+        - win
     
 .mac_build_job: &mac_build_job
     stage: build
@@ -90,11 +81,6 @@ stages:
         - cd ..
         - cmake --build build --config Release
         
-        # ctest
-        - cd build
-        - ctest -j10 -C Release -T test --output-on-failure
-        - cd ..
-
         #prepare build artifacts
         - mkdir appupdater
         - mkdir appupdater/lib
@@ -110,6 +96,9 @@ stages:
     tags:
         - macos
 
+# -----------
+# build stage
+# -----------
 
 linux_build:
     <<: *linux_build_job
@@ -120,16 +109,13 @@ linux_build:
             - ./linux_job_id
         expire_in: 3 day
 
-win64_build: 
-    variables:
-        ARCH: 'x64'
-        BUILD_DIR: 'build_x64'
-        PLATFORM: 'x64'
-    <<: *win_common_build_job
+win_build: 
+    <<: *win_build_job
     artifacts:
-        name: appupdater_win64
+        name: appupdater_win
         paths:
             - ./appupdater/*
+            - win_job_id
         expire_in: 3 day
 
 macos_build:
@@ -140,6 +126,54 @@ macos_build:
             - ./appupdater/*
         expire_in: 3 day
 
+# -----------
+# test stage
+# -----------
+
+linux_test:
+    variables: 
+        GIT_CHECKOUT: "false"
+    stage: test
+    dependencies: []
+    needs: [linux_build]
+    script:
+        # ctest
+        - cd build
+        - ctest -j10 -C Release -T test --output-on-failure
+        - cd ..
+    tags:
+        - linux
+
+win_test:
+    variables: 
+        GIT_CHECKOUT: "false"
+    stage: test
+    dependencies: []
+    needs: [win_build]
+    script:
+        # ctest
+        - cd build
+        - ctest -j10 -C Release -T test --output-on-failure
+        - cd ..
+    tags:
+        - win
+
+macos_test:
+    variables: 
+        GIT_CHECKOUT: "false"
+    stage: test
+    dependencies: []
+    needs: [macos_build]
+    script:
+        # ctest
+        - cd build
+        - ctest -j10 -C Release -T test --output-on-failure
+        - cd ..
+    tags:
+        - macos        
+# -----------
+# deploy stage
+# -----------
 deploy:
     image: ubuntu:14.04
     variables:
