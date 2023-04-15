@@ -124,6 +124,7 @@ macos_build:
         name: appupdater_macos
         paths:
             - ./appupdater/*
+            - mac_job_id
         expire_in: 3 day
 
 # -----------
