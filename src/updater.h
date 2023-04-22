@@ -9,51 +9,7 @@
 #include "versionInfo.h"
 #include "curlBridge.h"
 #include "xmlParser.h"
-
-enum Result
-{
-    RESULT_INPROGRESS,
-    RESULT_SUCCESS,
-    RESULT_FAILED,
-    RESULT_CANCELED,
-};
-
-enum OperationType
-{
-    TYPE_DOWNLOAD_INFO,
-    TYPE_DOWNLOAD_UPDATE,
-    TYPE_CHECK_UPDATE_VERSION,
-    TYPE_CHECK_SIGNATURE,
-    TYPE_RUN_INSTALLER,
-};
-
-enum UpdaterState
-{
-    STATE_READY,
-    STATE_CHECKING,
-    STATE_DOWNLOADING,
-    STATE_UPDATING,
-    STATE_PAUSED,
-};
-
-#pragma pack(push, 1)
-struct DownloadBytesInfo 
-{
-    size_t current;
-    size_t total;
-};
-#pragma pack(pop)
-
-struct ExtraInfo
-{
-    char *info;
-    size_t infoLength;
-    ExtraInfo() : info(NULL), infoLength(0) {}
-    explicit ExtraInfo(const void *val, size_t len);
-    ~ExtraInfo();
-};
-
-typedef std::function<void(OperationType, Result, const ExtraInfo &)> OperationResultFunction;
+#include "extraInfo.h"
 
 class Updater
 {

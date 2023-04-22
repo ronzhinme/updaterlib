@@ -1,5 +1,6 @@
 
 build/*
+builds/*
 CMakeFiles/*
 settings.json
 c_cpp_properties.json

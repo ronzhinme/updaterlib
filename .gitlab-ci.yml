@@ -30,11 +30,7 @@ stages:
         - cp build/src/*appUpdaterShared.* ./appupdater/lib
         - cp build/src/*appUpdaterStatic.* ./appupdater/lib
         - cp ./src/updaterInterface.h ./appupdater/include
-        - cp ./src/updater.h ./appupdater/include
-        - cp ./src/versionInfo.h ./appupdater/include
-        - cp ./src/curlBridge.h ./appupdater/include
-        - cp ./src/xmlParser.h ./appupdater/include
-        - cp ./src/platformSpecific.h ./appupdater/include
+        - cp ./src/extraInfo.h ./appupdater/include
     tags:
         - linux
 
@@ -58,11 +54,7 @@ stages:
         - cp ./build/src/Release/* ./appupdater/lib
         - cp ./build/src/*.dll ./appupdater/lib
         - cp ./src/updaterInterface.h ./appupdater/include
-        - cp ./src/updater.h ./appupdater/include
-        - cp ./src/versionInfo.h ./appupdater/include
-        - cp ./src/curlBridge.h ./appupdater/include
-        - cp ./src/xmlParser.h ./appupdater/include
-        - cp ./src/platformSpecific.h ./appupdater/include
+        - cp ./src/extraInfo.h ./appupdater/include
     tags:
         - win
     
@@ -88,11 +80,7 @@ stages:
         - cp build/src/*appUpdaterShared.* ./appupdater/lib
         - cp build/src/*appUpdaterStatic.* ./appupdater/lib
         - cp ./src/updaterInterface.h ./appupdater/include
-        - cp ./src/updater.h ./appupdater/include
-        - cp ./src/versionInfo.h ./appupdater/include
-        - cp ./src/curlBridge.h ./appupdater/include
-        - cp ./src/xmlParser.h ./appupdater/include
-        - cp ./src/platformSpecific.h ./appupdater/include
+        - cp ./src/extraInfo.h ./appupdater/include
     tags:
         - macos
 
