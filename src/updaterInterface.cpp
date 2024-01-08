@@ -2,6 +2,7 @@
 #include <thread>
 #include <future>
 #include "updaterInterface.h"
+#include "updater.h"
 
 UPDATER_PTR getUpdaterInstance()
 {

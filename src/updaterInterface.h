@@ -2,8 +2,6 @@
 #ifndef UPDATER_INTERFACE_H
 #define UPDATER_INTERFACE_H
 
-#include "updater.h"
-
 #if !defined(DLL_EXPORT)
 #if defined _MSC_FULL_VER
 #define DLL_EXPORT __declspec(dllexport)
@@ -12,7 +10,9 @@
 #endif
 #endif
 
-typedef void *UPDATER_PTR;
+#include "extraInfo.h"
+
+typedef void* UPDATER_PTR;
 
 extern "C"
 {
